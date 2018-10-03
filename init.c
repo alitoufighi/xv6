@@ -20,10 +20,7 @@ main(void)
   dup(0);  // stderr
 
   for(;;){
-    printf(1, "init: starting sh\n\n");
-	printf(1, "Saeed Zangeneh\n");
-	printf(1, "Ali Toufighi\n");
-	printf(1, "Hossein Soltanloo\n\n");
+    printf(1, "init: starting sh\n");
     pid = fork();
     if(pid < 0){
       printf(1, "init: fork failed\n");
