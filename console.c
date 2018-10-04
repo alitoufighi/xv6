@@ -15,6 +15,9 @@
 #include "proc.h"
 #include "x86.h"
 
+#define KEY_LF          0xE4
+#define KEY_RT          0xE5
+
 static void consputc(int);
 
 static int panicked = 0;
@@ -143,6 +146,10 @@ cgaputc(int c)
     pos += 80 - pos%80;
   else if(c == BACKSPACE){
     if(pos > 0) --pos;
+  }
+  else if(c == KEY_LF){
+    --pos;
+
   } else
     crt[pos++] = (c&0xff) | 0x0700;  // black on white
 
@@ -162,6 +169,15 @@ cgaputc(int c)
   crt[pos] = ' ' | 0x0700;
 }
 
+#define INPUT_BUF 128
+struct {
+  char buf[INPUT_BUF];
+  uint r;  // Read index
+  uint w;  // Write index
+  uint e;  // Edit index
+  uint cursor; // Cursor index
+} input;
+
 void
 consputc(int c)
 {
@@ -173,18 +189,19 @@ consputc(int c)
 
   if(c == BACKSPACE){
     uartputc('\b'); uartputc(' '); uartputc('\b');
-  } else
-    uartputc(c);
+  }
+
+  // if(c == KEY_LF){
+    for(int i = input.cursor; i < input.e; i++)
+    {
+        uartputc(input.buf[i]);
+    }
+  // }
+
+  // else
+  //   uartputc(c);
   cgaputc(c);
 }
-
-#define INPUT_BUF 128
-struct {
-  char buf[INPUT_BUF];
-  uint r;  // Read index
-  uint w;  // Write index
-  uint e;  // Edit index
-} input;
 
 #define C(x)  ((x)-'@')  // Control-x
 
@@ -206,17 +223,24 @@ consoleintr(int (*getc)(void))
         input.e--;
         consputc(BACKSPACE);
       }
+      input.cursor = input.e;
       break;
     case C('H'): case '\x7f':  // Backspace
       if(input.e != input.w){
         input.e--;
+        input.cursor--;
         consputc(BACKSPACE);
       }
+      break;
+    case KEY_LF:
+      input.cursor--;
+      consputc(KEY_LF);
       break;
     default:
       if(c != 0 && input.e-input.r < INPUT_BUF){
         c = (c == '\r') ? '\n' : c;
-        input.buf[input.e++ % INPUT_BUF] = c;
+        input.buf[input.cursor++ % INPUT_BUF] = c;
+        input.e++;
         consputc(c);
         if(c == '\n' || c == C('D') || input.e == input.r+INPUT_BUF){
           input.w = input.e;
@@ -296,4 +320,3 @@ consoleinit(void)
 
   ioapicenable(IRQ_KBD, 0);
 }
-
