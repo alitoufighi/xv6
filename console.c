@@ -236,6 +236,12 @@ consoleintr(int (*getc)(void))
     case KEY_LF:
       input.cursor--;
       break;
+    
+    case KEY_RT:
+      input.cursor++;
+      if(input.cursor > input.e)
+        input.cursor = input.e;
+      break;
 
     default:
       if(c != 0 && input.e - input.r < INPUT_BUF)
