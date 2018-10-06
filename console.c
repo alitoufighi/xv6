@@ -131,6 +131,15 @@ panic(char *s)
 #define CRTPORT 0x3d4
 static ushort *crt = (ushort*)P2V(0xb8000);  // CGA memory
 
+#define INPUT_BUF 128
+struct {
+  char buf[INPUT_BUF];
+  uint r;  // Read index
+  uint w;  // Write index
+  uint e;  // Edit index
+  uint cursor; // Cursor index
+} input;
+
 static void
 cgaputc(int c)
 {
@@ -149,8 +158,40 @@ cgaputc(int c)
     if(pos > 0) --pos;
   }
   
+  else if (c == KEY_LF)
+  {
+    if(pos > 0)
+      pos--;
+    
+    int i = 0;
+    while(i < (input.e - input.cursor))
+    {
+      crt[pos + i + 1] = (input.buf[input.cursor + i + 1] & 0xff) | 0x0700;  // black on white
+      i++;
+    }
+  }
+
+  else if (c == KEY_RT)
+  {
+    pos++;
+    int i = 0;
+    while(i < (input.e - input.cursor))
+    {
+      crt[pos + i + 1] = (input.buf[input.cursor + i + 1] & 0xff) | 0x0700;  // black on white
+      i++;
+    }
+  }
   else
-    crt[pos++] = (c&0xff) | 0x0700;  // black on white
+  {
+    crt[pos] = (c&0xff) | 0x0700;  // black on white
+    pos++;
+    int i = 0;
+    while(i < (input.e - input.cursor))
+    {
+      crt[pos + i] = (input.buf[input.cursor + i] & 0xff) | 0x0700;  // black on white
+      i++;
+    }
+  }
 
   if(pos < 0 || pos > 25*80)
     panic("pos under/overflow");
@@ -165,23 +206,7 @@ cgaputc(int c)
   outb(CRTPORT+1, pos>>8);
   outb(CRTPORT, 15);
   outb(CRTPORT+1, pos);
-  crt[pos] = ' ' | 0x0700;
 }
-
-// static void print_without_cursor()
-// {
-//   int i = input.cursor;
-//   while()
-// }
-
-#define INPUT_BUF 128
-struct {
-  char buf[INPUT_BUF];
-  uint r;  // Read index
-  uint w;  // Write index
-  uint e;  // Edit index
-  uint cursor; // Cursor index
-} input;
 
 void
 consputc(int c)
@@ -235,12 +260,14 @@ consoleintr(int (*getc)(void))
 
     case KEY_LF:
       input.cursor--;
+      consputc(KEY_LF);
       break;
     
     case KEY_RT:
       input.cursor++;
       if(input.cursor > input.e)
         input.cursor = input.e;
+      consputc(KEY_RT);
       break;
 
     default:
