@@ -241,19 +241,20 @@ consoleintr(int (*getc)(void))
       if(c != 0 && input.e - input.r < INPUT_BUF)
       {
         c = (c == '\r') ? '\n' : c;
-        int i = input.e;
-        while (i > input.cursor)
-        {
-          input.buf[i + 1] = input.buf[i];
-          i--;
-        }
-        if(c == '\n' || c == C('D'))
+        if(c == '\n' || c == C('D') || input.e == input.r + INPUT_BUF)
         {
           input.buf[input.e % INPUT_BUF] = c;
+          input.cursor++;
           input.e++;
         }
         else
         {
+          int i = input.e;
+          while (i > input.cursor)
+          {
+            input.buf[i % INPUT_BUF] = input.buf[(i - 1) % INPUT_BUF];
+            i--;
+          }
           input.buf[input.cursor % INPUT_BUF] = c;
           input.cursor++;
           input.e++;
