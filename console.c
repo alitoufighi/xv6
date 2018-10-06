@@ -161,10 +161,9 @@ cgaputc(int c)
     int i = 0;
     while(i < (input.e - input.cursor))
     {
-      crt[pos + i + 1] = (input.buf[input.cursor + i + 1] & 0xff) | 0x0700;  // black on white
+      crt[pos + i] = (input.buf[input.cursor + i] & 0xff) | 0x0700;  // black on white
       i++;
     }
-
     crt[pos + i] = (' ' && 0xff | 0x0700);
   }
   
@@ -264,6 +263,12 @@ consoleintr(int (*getc)(void))
       if(input.e != input.w){
         input.e--;
         input.cursor--;
+        int i = input.cursor;
+        while (i < input.e)
+        {
+          input.buf[i] = input.buf[i + 1];
+          i++;
+        }
         consputc(BACKSPACE);
       }
       break;
