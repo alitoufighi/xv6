@@ -6,6 +6,13 @@
 char* int_to_string(uint number)
 {
     char* result = (char*)malloc(10 * sizeof(char));
+    if (number == 0)
+    {
+        result[0] = '0';
+        result[1] = '\n';
+        result[2] = '\0';
+        return result;
+    }
     int i = 0;
     while(number > 0)
     {
@@ -15,7 +22,6 @@ char* int_to_string(uint number)
     }
     result[i] = '\n';
     result[i + 1] = '\0';
-    printf(2, "i : %d\n", i);
     for(int j = 0; j < (i / 2); j++)
     {
         char temp = result[j];
@@ -27,7 +33,6 @@ char* int_to_string(uint number)
 
 int main(int argc, char* argv[])
 {
-    printf(2, "pid : %d\n", getpid());
     uint numbers[5];
     for(int i = 1; i < 6; i++)
         numbers[i - 1] = atoi(argv[i]);
@@ -52,7 +57,6 @@ int main(int argc, char* argv[])
     for(int i = 0; i < 5; i++)
     {
         char* number_string = int_to_string(numbers[i]);
-        printf(2, "%s \n", number_string);
         write(fd, number_string, strlen(number_string));
         free(number_string);
     }
