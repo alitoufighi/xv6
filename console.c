@@ -144,13 +144,12 @@ cgaputc(int c)
 
   if(c == '\n')
     pos += 80 - pos%80;
+  
   else if(c == BACKSPACE){
     if(pos > 0) --pos;
   }
-  else if(c == KEY_LF){
-    --pos;
-
-  } else
+  
+  else
     crt[pos++] = (c&0xff) | 0x0700;  // black on white
 
   if(pos < 0 || pos > 25*80)
@@ -168,6 +167,12 @@ cgaputc(int c)
   outb(CRTPORT+1, pos);
   crt[pos] = ' ' | 0x0700;
 }
+
+// static void print_without_cursor()
+// {
+//   int i = input.cursor;
+//   while()
+// }
 
 #define INPUT_BUF 128
 struct {
@@ -191,15 +196,6 @@ consputc(int c)
     uartputc('\b'); uartputc(' '); uartputc('\b');
   }
 
-  // if(c == KEY_LF){
-    for(int i = input.cursor; i < input.e; i++)
-    {
-        uartputc(input.buf[i]);
-    }
-  // }
-
-  // else
-  //   uartputc(c);
   cgaputc(c);
 }
 
@@ -211,12 +207,15 @@ consoleintr(int (*getc)(void))
   int c, doprocdump = 0;
 
   acquire(&cons.lock);
-  while((c = getc()) >= 0){
+  while((c = getc()) >= 0)
+  {
     switch(c){
+
     case C('P'):  // Process listing.
       // procdump() locks cons.lock indirectly; invoke later
       doprocdump = 1;
       break;
+
     case C('U'):  // Kill line.
       while(input.e != input.w &&
             input.buf[(input.e-1) % INPUT_BUF] != '\n'){
@@ -225,6 +224,7 @@ consoleintr(int (*getc)(void))
       }
       input.cursor = input.e;
       break;
+
     case C('H'): case '\x7f':  // Backspace
       if(input.e != input.w){
         input.e--;
@@ -232,18 +232,36 @@ consoleintr(int (*getc)(void))
         consputc(BACKSPACE);
       }
       break;
+
     case KEY_LF:
       input.cursor--;
-      consputc(KEY_LF);
       break;
+
     default:
-      if(c != 0 && input.e-input.r < INPUT_BUF){
+      if(c != 0 && input.e - input.r < INPUT_BUF)
+      {
         c = (c == '\r') ? '\n' : c;
-        input.buf[input.cursor++ % INPUT_BUF] = c;
-        input.e++;
+        int i = input.e;
+        while (i > input.cursor)
+        {
+          input.buf[i + 1] = input.buf[i];
+          i--;
+        }
+        if(c == '\n' || c == C('D'))
+        {
+          input.buf[input.e % INPUT_BUF] = c;
+          input.e++;
+        }
+        else
+        {
+          input.buf[input.cursor % INPUT_BUF] = c;
+          input.cursor++;
+          input.e++;
+        }      
         consputc(c);
-        if(c == '\n' || c == C('D') || input.e == input.r+INPUT_BUF){
+        if(c == '\n' || c == C('D') || input.e == input.r + INPUT_BUF){
           input.w = input.e;
+          input.cursor = input.e;
           wakeup(&input.r);
         }
       }
