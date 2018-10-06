@@ -155,7 +155,17 @@ cgaputc(int c)
     pos += 80 - pos%80;
   
   else if(c == BACKSPACE){
-    if(pos > 0) --pos;
+    if(pos > 0)
+      --pos;
+    
+    int i = 0;
+    while(i < (input.e - input.cursor))
+    {
+      crt[pos + i + 1] = (input.buf[input.cursor + i + 1] & 0xff) | 0x0700;  // black on white
+      i++;
+    }
+
+    crt[pos + i] = (' ' && 0xff | 0x0700);
   }
   
   else if (c == KEY_LF)
@@ -266,7 +276,10 @@ consoleintr(int (*getc)(void))
     case KEY_RT:
       input.cursor++;
       if(input.cursor > input.e)
+      {
         input.cursor = input.e;
+        break;
+      }
       consputc(KEY_RT);
       break;
 
