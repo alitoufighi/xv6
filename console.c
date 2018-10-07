@@ -275,8 +275,10 @@ consoleintr(int (*getc)(void))
       break;
 
     case KEY_LF:
-      input.cursor--;
-      consputc(KEY_LF);
+      if(input.cursor>0){
+        input.cursor--;
+        consputc(KEY_LF);
+      }
       break;
     
     case KEY_RT:
@@ -296,21 +298,19 @@ consoleintr(int (*getc)(void))
         if(c == '\n' || c == C('D') || input.e == input.r + INPUT_BUF)
         {
           input.buf[input.e % INPUT_BUF] = c;
-          input.cursor++;
-          input.e++;
         }
         else
         {
-          int i = input.e;
+          uint i = input.e;
           while (i > input.cursor)
           {
             input.buf[i % INPUT_BUF] = input.buf[(i - 1) % INPUT_BUF];
             i--;
           }
           input.buf[input.cursor % INPUT_BUF] = c;
-          input.cursor++;
-          input.e++;
-        }      
+        }
+        ++input.cursor;
+        ++input.e;
         consputc(c);
         if(c == '\n' || c == C('D') || input.e == input.r + INPUT_BUF){
           input.w = input.e;
