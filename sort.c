@@ -22,7 +22,9 @@ char* int_to_string(uint number)
     }
     result[i] = '\n';
     result[i + 1] = '\0';
-    for(int j = 0; j < (i / 2); j++)
+    
+    int j;
+    for(j = 0; j < (i / 2); j++)
     {
         char temp = result[j];
         result[j] = result[i - j - 1];
