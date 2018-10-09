@@ -22,7 +22,8 @@ char* int_to_string(uint number)
     }
     result[i] = '\n';
     result[i + 1] = '\0';
-    for(int j = 0; j < (i / 2); j++)
+    int j;
+    for(j = 0; j < (i / 2); j++)
     {
         char temp = result[j];
         result[j] = result[i - j - 1];
@@ -34,17 +35,18 @@ char* int_to_string(uint number)
 int main(int argc, char* argv[])
 {
     uint numbers[5];
-    for(int i = 1; i < 6; i++)
+    int i;
+    for(i = 1; i < 6; i++)
         numbers[i - 1] = atoi(argv[i]);
 
-    int temp;
-    for(int i = 0; i < 5; i++)
-        for(int j = 0; j < 4; j++)
-            if(numbers[j] > numbers[j + 1])
+    int j, k;
+    for(j = 0; j < 5; j++)
+        for(k = 0; k < 4; k++)
+            if(numbers[k] > numbers[k + 1])
             {
-                temp = numbers[j];
-                numbers[j] = numbers[j + 1];
-                numbers[j + 1] = temp;
+                numbers[k] = numbers[k] + numbers[k + 1];
+                numbers[k + 1] = numbers[k] - numbers[k + 1];
+                numbers[k] = numbers[k] - numbers[k + 1];
             }
 
     int fd = open("result", O_CREATE | O_WRONLY);
@@ -53,10 +55,10 @@ int main(int argc, char* argv[])
         printf(2, "Create or open file failed \n");
         exit();
     }
-
-    for(int i = 0; i < 5; i++)
+    int l;
+    for(l = 0; l < 5; l++)
     {
-        char* number_string = int_to_string(numbers[i]);
+        char* number_string = int_to_string(numbers[l]);
         write(fd, number_string, strlen(number_string));
         free(number_string);
     }
