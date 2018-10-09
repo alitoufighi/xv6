@@ -170,24 +170,15 @@ cgaputc(int c)
   else if (c == KEY_LF)
   {
     if(pos > 0)
-      pos--;
-    
-    int i = 0;
-    while(i < (input.e - input.cursor))
     {
-      crt[pos + i + 1] = (input.buf[input.cursor + i + 1] & 0xff) | 0x0700;  // black on white
-      i++;
+      --pos;
     }
   }
 
   else if (c == KEY_RT)
   {
-    pos++;
-    int i = 0;
-    while(i < (input.e - input.cursor))
-    {
-      crt[pos + i + 1] = (input.buf[input.cursor + i + 1] & 0xff) | 0x0700;  // black on white
-      i++;
+    if(input.cursor<input.e){
+      ++pos;
     }
   }
   else
@@ -228,7 +219,8 @@ consputc(int c)
 
   if(c == BACKSPACE){
     uartputc('\b'); uartputc(' '); uartputc('\b');
-  }
+  } else
+    uartputc(c);
 
   cgaputc(c);
 }
@@ -275,20 +267,26 @@ consoleintr(int (*getc)(void))
       break;
 
     case KEY_LF:
-      if(input.cursor>0){
+      if(input.cursor>input.w)
+      {
         input.cursor--;
         consputc(KEY_LF);
       }
       break;
     
     case KEY_RT:
-      input.cursor++;
-      if(input.cursor > input.e)
+      if (input.cursor < input.e)
       {
-        input.cursor = input.e;
-        break;
+        ++input.cursor;
+        consputc(KEY_RT);
       }
-      consputc(KEY_RT);
+      // input.cursor++;
+      // if(input.cursor > input.e)
+      // {
+        // input.cursor = input.e;
+        // break;
+      // }
+      
       break;
 
     default:
@@ -301,7 +299,7 @@ consoleintr(int (*getc)(void))
         }
         else
         {
-          uint i = input.e;
+          int i = input.e;
           while (i > input.cursor)
           {
             input.buf[i % INPUT_BUF] = input.buf[(i - 1) % INPUT_BUF];
