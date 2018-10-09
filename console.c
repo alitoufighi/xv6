@@ -15,6 +15,9 @@
 #include "proc.h"
 #include "x86.h"
 
+#define KEY_LF          0xE4
+#define KEY_RT          0xE5
+
 static void consputc(int);
 
 static int panicked = 0;
@@ -128,6 +131,15 @@ panic(char *s)
 #define CRTPORT 0x3d4
 static ushort *crt = (ushort*)P2V(0xb8000);  // CGA memory
 
+#define INPUT_BUF 128
+struct {
+  char buf[INPUT_BUF];
+  uint r;  // Read index
+  uint w;  // Write index
+  uint e;  // End index
+  uint cursor; // Cursor index
+} input;
+
 static void
 cgaputc(int c)
 {
@@ -141,10 +153,45 @@ cgaputc(int c)
 
   if(c == '\n')
     pos += 80 - pos%80;
+  
   else if(c == BACKSPACE){
-    if(pos > 0) --pos;
-  } else
-    crt[pos++] = (c&0xff) | 0x0700;  // black on white
+    if(pos > 0)
+      --pos;
+    
+    int i = 0;
+    while(i < (input.e - input.cursor))
+    {
+      crt[pos + i] = (input.buf[input.cursor + i] & 0xff) | 0x0700;  // black on white
+      i++;
+    }
+    crt[pos + i] = (' ' && 0xff | 0x0700);
+  }
+  
+  else if (c == KEY_LF)
+  {
+    if(pos > 0)
+    {
+      --pos;
+    }
+  }
+
+  else if (c == KEY_RT)
+  {
+    if(input.cursor<input.e){
+      ++pos;
+    }
+  }
+  else
+  {
+    crt[pos] = (c&0xff) | 0x0700;  // black on white
+    pos++;
+    int i = 0;
+    while(i < (input.e - input.cursor))
+    {
+      crt[pos + i] = (input.buf[input.cursor + i] & 0xff) | 0x0700;  // black on white
+      i++;
+    }
+  }
 
   if(pos < 0 || pos > 25*80)
     panic("pos under/overflow");
@@ -159,7 +206,6 @@ cgaputc(int c)
   outb(CRTPORT+1, pos>>8);
   outb(CRTPORT, 15);
   outb(CRTPORT+1, pos);
-  crt[pos] = ' ' | 0x0700;
 }
 
 void
@@ -175,16 +221,9 @@ consputc(int c)
     uartputc('\b'); uartputc(' '); uartputc('\b');
   } else
     uartputc(c);
+
   cgaputc(c);
 }
-
-#define INPUT_BUF 128
-struct {
-  char buf[INPUT_BUF];
-  uint r;  // Read index
-  uint w;  // Write index
-  uint e;  // Edit index
-} input;
 
 #define C(x)  ((x)-'@')  // Control-x
 
@@ -194,32 +233,86 @@ consoleintr(int (*getc)(void))
   int c, doprocdump = 0;
 
   acquire(&cons.lock);
-  while((c = getc()) >= 0){
+  while((c = getc()) >= 0)
+  {
     switch(c){
+
     case C('P'):  // Process listing.
       // procdump() locks cons.lock indirectly; invoke later
       doprocdump = 1;
       break;
+
     case C('U'):  // Kill line.
       while(input.e != input.w &&
             input.buf[(input.e-1) % INPUT_BUF] != '\n'){
+        input.cursor--;
         input.e--;
         consputc(BACKSPACE);
       }
+      input.cursor = input.e;
       break;
+
     case C('H'): case '\x7f':  // Backspace
       if(input.e != input.w){
         input.e--;
+        input.cursor--;
+        int i = input.cursor;
+        while (i < input.e)
+        {
+          input.buf[i] = input.buf[i + 1];
+          i++;
+        }
         consputc(BACKSPACE);
       }
       break;
+
+    case KEY_LF:
+      if(input.cursor>input.w)
+      {
+        input.cursor--;
+        consputc(KEY_LF);
+      }
+      break;
+    
+    case KEY_RT:
+      if (input.cursor < input.e)
+      {
+        ++input.cursor;
+        consputc(KEY_RT);
+      }
+      // input.cursor++;
+      // if(input.cursor > input.e)
+      // {
+        // input.cursor = input.e;
+        // break;
+      // }
+      
+      break;
+
     default:
-      if(c != 0 && input.e-input.r < INPUT_BUF){
+      if(c != 0 && input.e - input.r < INPUT_BUF)
+      {
         c = (c == '\r') ? '\n' : c;
-        input.buf[input.e++ % INPUT_BUF] = c;
+        if(c == '\n' || c == C('D') || input.e == input.r + INPUT_BUF)
+        {
+          input.buf[input.e % INPUT_BUF] = c;
+        }
+        else
+        {
+          int i = input.e;
+          while (i > input.cursor)
+          {
+            input.buf[i % INPUT_BUF] = input.buf[(i - 1) % INPUT_BUF];
+            i--;
+          }
+          input.buf[input.cursor % INPUT_BUF] = c;
+        }
+        ++input.cursor;
+        ++input.e;
         consputc(c);
-        if(c == '\n' || c == C('D') || input.e == input.r+INPUT_BUF){
+        if(c == '\n' || c == C('D') || input.e == input.r + INPUT_BUF){
           input.w = input.e;
+          input.cursor = input.e;
           wakeup(&input.r);
         }
       }
@@ -296,4 +389,3 @@ consoleinit(void)
 
   ioapicenable(IRQ_KBD, 0);
 }
-
