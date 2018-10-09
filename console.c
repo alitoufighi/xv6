@@ -136,7 +136,7 @@ struct {
   char buf[INPUT_BUF];
   uint r;  // Read index
   uint w;  // Write index
-  uint e;  // Edit index
+  uint e;  // End index
   uint cursor; // Cursor index
 } input;
 
