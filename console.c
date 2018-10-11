@@ -155,19 +155,20 @@ cgaputc(int c)
     pos += 80 - pos%80;
   
   else if(c == BACKSPACE){
-    if(pos > 0)
+    if(pos > 0){
       --pos;
     
-    int i = 0;
-    while(i < (input.e - input.cursor))
-    {
-      crt[pos + i] = (input.buf[input.cursor + i] & 0xff) | 0x0700;  // black on white
-      i++;
+      int i = 0;
+      while(i < (input.e - input.cursor))
+      {
+        crt[pos + i] = (input.buf[input.cursor + i] & 0xff) | 0x0700;  // black on white
+        i++;
+      }
+      crt[pos + i] = (' ' && 0xff | 0x0700);
     }
-    crt[pos + i] = (' ' && 0xff | 0x0700);
   }
   
-  else if (c == KEY_LF)
+  else if(c == KEY_LF)
   {
     if(pos > 0)
     {
@@ -175,7 +176,7 @@ cgaputc(int c)
     }
   }
 
-  else if (c == KEY_RT)
+  else if(c == KEY_RT)
   {
     if(input.cursor<input.e){
       ++pos;
@@ -183,8 +184,8 @@ cgaputc(int c)
   }
   else
   {
-    crt[pos] = (c&0xff) | 0x0700;  // black on white
-    pos++;
+    crt[pos++] = (c&0xff) | 0x0700;  // black on white
+    // pos++;
     int i = 0;
     while(i < (input.e - input.cursor))
     {
@@ -253,7 +254,7 @@ consoleintr(int (*getc)(void))
       break;
 
     case C('H'): case '\x7f':  // Backspace
-      if(input.e != input.w){
+      if(input.e != input.w && input.cursor > input.r){
         input.e--;
         input.cursor--;
         int i = input.cursor;
