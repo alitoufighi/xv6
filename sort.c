@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
                 numbers[k] = numbers[k] - numbers[k + 1];
             }
 
-    int fd = open("result", O_CREATE | O_WRONLY);
+    int fd = open("result.txt", O_CREATE | O_WRONLY);
     if (fd < 0)
     {
         printf(2, "Create or open file failed \n");
@@ -62,6 +62,8 @@ int main(int argc, char* argv[])
         write(fd, number_string, strlen(number_string));
         free(number_string);
     }
+    uint pid = getpid();
+    printf(1, "%s", int_to_string(pid));
     close(fd);
     exit();
 }
