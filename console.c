@@ -178,7 +178,7 @@ cgaputc(int c)
 
   else if(c == KEY_RT)
   {
-    if(input.cursor<input.e){
+    if(input.cursor<=input.e){
       ++pos;
     }
   }
