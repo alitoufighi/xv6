@@ -89,3 +89,17 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+// return how many clock tick interrupts have occurred
+// since start.
+int
+sys_ticketlockinit(void)
+{
+  return 10;
+}
+
+int
+sys_ticketlocktest(void)
+{
+  return 10;
+}
