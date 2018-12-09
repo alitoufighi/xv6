@@ -7,8 +7,8 @@
 struct ticketlock {
   // uint locked;       // Is the lock held?
   struct spinlock lk;
-  int next_release_ticket;
-  int next_queue_ticket;
+  int next_ticket;
+  int now_serving;
 
   // For debugging:
   char *name;        // Name of lock.
@@ -19,4 +19,5 @@ struct ticketlock {
 
 void acquireticketlock();
 void releaseticketlock();
+
 #endif
