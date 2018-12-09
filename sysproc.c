@@ -7,6 +7,7 @@
 #include "mmu.h"
 #include "proc.h"
 #include "ticketlock.h"
+#include "rwlock.h"
 
 int
 sys_fork(void)
@@ -120,5 +121,21 @@ sys_rwinit(void)
 int
 sys_rwtest(void)
 {
+  struct tl rw_ticket, readers_ticket;
+  ticketlockinit(&rw_ticket);
+  ticketlockinit(&readers_ticket);
+  int pattern, read_count;
+  if(argint(0, &pattern) < 0)
+    return -1;
+  
+  char* pat_str = itoa(pattern, 2);
+  int i;
+  for(i = 1; i < strlen(pat_str); ++i)
+  {
+    if(pat_str[i] == '0')
+      rwlockread(&rw_ticket, &readers_ticket, &read_count);
+    else
+      rwlockwrite(&rw_ticket);
+  }
   return 10;
 }
