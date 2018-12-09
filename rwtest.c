@@ -4,6 +4,6 @@
 int main()
 {
 	rwinit();
-	rwtest(10);
+	rwtest(18);
 	exit();
 }
