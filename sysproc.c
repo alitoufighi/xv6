@@ -6,6 +6,7 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
+#include "ticketlock.h"
 
 int
 sys_fork(void)
@@ -90,12 +91,13 @@ sys_uptime(void)
   return xticks;
 }
 
-// return how many clock tick interrupts have occurred
-// since start.
 int
 sys_ticketlockinit(void)
 {
-  return 10;
+  // ticketlock.lk = 0;
+  ticketlock.next_queue_ticket = 0;
+  ticketlock.next_release_ticket = 0;
+  return 1;
 }
 
 int
