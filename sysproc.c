@@ -95,8 +95,8 @@ int
 sys_ticketlockinit(void)
 {
   // ticketlock.lk = 0;
-  ticketlock.next_queue_ticket = 0;
-  ticketlock.next_release_ticket = 0;
+  ticketlock.next_ticket = 0;
+  ticketlock.now_serving = 0;
   return 1;
 }
 

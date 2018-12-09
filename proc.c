@@ -451,6 +451,42 @@ sleep(void *chan, struct spinlock *lk)
   }
 }
 
+void sleepticket(int ticket, struct spinlock* lk)
+{
+  struct proc *p = myproc();
+
+  if(p == 0)
+    panic("sleep");
+
+  if(lk == 0)
+    panic("sleep without lk");
+
+  // Must acquire ptable.lock in order to
+  // change p->state and then call sched.
+  // Once we hold ptable.lock, we can be
+  // guaranteed that we won't miss any wakeup
+  // (wakeup runs with ptable.lock locked),
+  // so it's okay to release lk.
+  if(lk != &ptable.lock){  //DOC: sleeplock0
+    acquire(&ptable.lock);  //DOC: sleeplock1
+    release(lk);
+  }
+  // Go to sleep.
+  p->ticket = ticket;
+  p->state = SLEEPING;
+
+  sched();
+
+  // Tidy up.
+  p->ticket = -1;
+
+  // Reacquire original lock.
+  if(lk != &ptable.lock){  //DOC: ticket
+    release(&ptable.lock);
+    acquire(lk);
+  }
+}
+
 //PAGEBREAK!
 // Wake up all processes sleeping on chan.
 // The ptable lock must be held.
