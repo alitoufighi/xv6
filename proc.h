@@ -1,5 +1,10 @@
 #ifndef _PROC_H_
 #define _PROC_H_
+
+#include "types.h"
+#include "mmu.h"
+#include "param.h"
+
 // Per-CPU state
 struct cpu {
   uchar apicid;                // Local APIC ID

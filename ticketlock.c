@@ -13,13 +13,13 @@ acquireticketlock()
       myproc()->ticket =  ++ticketlock.next_queue_ticket;
 
   while (myproc()->ticket == ticketlock.next_release_ticket) {
-    sleepticket(ticketlock, myproc()->ticket);
+    // sleepticket(ticketlock, myproc()->ticket);
   }
 
   release(&ticketlock.lk);
 }
 
-releaseticketlock()
-{
+// releaseticketlock()
+// {
 
-}
+// }

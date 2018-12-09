@@ -1,5 +1,6 @@
 #ifndef _TICKETLOCK_H_
 #define _TICKETLOCK_H_
+
 #include "types.h"
 #include "spinlock.h"
 
