@@ -4,14 +4,14 @@
 #include "x86.h"
 #include "defs.h"
 
-void ticketlockinit(struct tl* ticketlock)
+void ticketlockinit(struct ticketlock* ticketlock)
 {
   ticketlock->next_ticket = 0;
   ticketlock->now_serving = 0;
 }
 
 void
-acquireticketlock(struct tl* ticketlock)
+acquireticketlock(struct ticketlock* ticketlock)
 {
   pushcli();
   int ticket = fetch_and_inc(&ticketlock->next_ticket, 1);
@@ -21,7 +21,7 @@ acquireticketlock(struct tl* ticketlock)
 }
 
 void
-releaseticketlock(struct tl* ticketlock)
+releaseticketlock(struct ticketlock* ticketlock)
 {
   pushcli();
   if (ticketlock->now_serving >= ticketlock->next_ticket)

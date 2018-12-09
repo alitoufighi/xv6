@@ -121,7 +121,7 @@ sys_rwinit(void)
 int
 sys_rwtest(void)
 {
-  struct tl rw_ticket, readers_ticket;
+  struct ticketlock rw_ticket, readers_ticket;
   ticketlockinit(&rw_ticket);
   ticketlockinit(&readers_ticket);
   int pattern, read_count;
