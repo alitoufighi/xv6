@@ -40,3 +40,35 @@ rwlockread(struct tl* rw_ticket, struct tl* readers_ticket, int* read_count)
 	
 	releaseticketlock(readers_ticket);
 }
+
+
+void
+rwlockread1(struct tl* rw_ticket)
+{
+	acquireticketlock(rw_ticket);
+	cprintf("reading\n");
+	releaseticketlock(rw_ticket);
+}
+
+void
+rwlockwrite1(struct tl* rw_ticket, struct tl* writers_ticket, int* write_count)
+{
+	acquireticketlock(writers_ticket);
+	(*write_count)++;
+
+	if (*write_count == 1)
+		acquireticketlock(rw_ticket);
+	
+	releaseticketlock(writers_ticket);
+
+	cprintf("reading \n");
+
+	acquireticketlock(writers_ticket);
+
+	(*write_count)--;
+
+	if (*write_count == 0)
+		releaseticketlock(rw_ticket);
+	
+	releaseticketlock(writers_ticket);
+}

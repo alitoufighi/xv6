@@ -19,6 +19,7 @@ struct tl {
 
 void acquireticketlock(struct tl*);
 void releaseticketlock(struct tl*);
+
 char* itoa(int val, int base);
 
 #endif
