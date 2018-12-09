@@ -42,7 +42,6 @@ rwlockread(struct ticketlock* rw_ticket, struct ticketlock* readers_ticket, int*
 	releaseticketlock(readers_ticket);
 }
 
-
 // writers priority
 void
 rwlockread1(struct ticketlock* rw_ticket)
@@ -51,7 +50,6 @@ rwlockread1(struct ticketlock* rw_ticket)
   cprintf("reading\n");
   releaseticketlock(rw_ticket);
 }
-
 
 void
 rwlockwrite1(struct ticketlock* rw_ticket, struct ticketlock* writers_ticket, int* write_count)
