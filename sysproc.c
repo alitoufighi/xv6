@@ -100,8 +100,14 @@ sys_ticketlockinit(void)
   return 1;
 }
 
+int counter = 0;
+
 int
 sys_ticketlocktest(void)
 {
-  return 10;
+  acquireticketlock();
+  cprintf("Processing on: %d", counter);
+  counter++;
+  releaseticketlock();
+  return 0;
 }
