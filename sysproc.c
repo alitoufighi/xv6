@@ -110,3 +110,15 @@ sys_ticketlocktest(void)
   releaseticketlock();
   return 0;
 }
+
+int
+sys_rwinit(void)
+{
+  return 1;
+}
+
+int
+sys_rwtest(void)
+{
+  return 10;
+}
