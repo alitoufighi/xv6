@@ -4,7 +4,7 @@
 #include "types.h"
 #include "spinlock.h"
 
-struct ticketlock {
+struct tl {
   // uint locked;       // Is the lock held?
   struct spinlock lk;
   int next_ticket;
