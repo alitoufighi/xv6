@@ -8,7 +8,7 @@ int main()
 	int pid;
 	ticketlockinit();
 
-	pid = fork();
+	pid = getpid();
 
 	for (int i = 0; i < NCHILD; i++)
 		if (pid > 0)
@@ -21,7 +21,6 @@ int main()
 
 	else if (pid == 0)
 	{
-		printf(1, "child adding to shared counter\n");
 		ticketlocktest();
 	}
 

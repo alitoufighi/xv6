@@ -94,7 +94,6 @@ sys_uptime(void)
 int
 sys_ticketlockinit(void)
 {
-  // ticketlock.lk = 0;
   ticketlock.next_ticket = 0;
   ticketlock.now_serving = 0;
   return 1;
@@ -106,8 +105,8 @@ int
 sys_ticketlocktest(void)
 {
   acquireticketlock();
-  cprintf("Processing on: %d", counter);
   counter++;
+  cprintf("Processing on: %d\n", counter);
   releaseticketlock();
   return 0;
 }

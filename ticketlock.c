@@ -7,19 +7,9 @@ void
 acquireticketlock()
 {
   acquire(&ticketlock.lk);
-  if (ticketlock.now_serving == ticketlock.next_ticket)
-  {
-    ticketlock.next_ticket++;
-    release(&ticketlock.lk);
-    return;
-  }
-  
-  if (myproc()->ticket == -1)
-      myproc()->ticket =  ++ticketlock.next_ticket;
-
-  while (myproc()->ticket == ticketlock.next_ticket) {
-    sleepticket(myproc()->ticket, &ticketlock.lk);
-  }
+  myproc()->ticket = ticketlock.next_ticket++;
+  if(ticketlock.now_serving != myproc()->ticket)
+    sleepticket(&ticketlock.lk);
 
   release(&ticketlock.lk);
 }
@@ -32,8 +22,6 @@ releaseticketlock()
   if (ticketlock.now_serving >= ticketlock.next_ticket)
     panic("release invalid ticket !");
 
-
-  ticketlock.now_serving++;
-  
+  wakeupticket(++ticketlock.now_serving); 
   release(&ticketlock.lk);
 }

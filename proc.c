@@ -6,7 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
-
+#include "ticketlock.h"
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -451,7 +451,7 @@ sleep(void *chan, struct spinlock *lk)
   }
 }
 
-void sleepticket(int ticket, struct spinlock* lk)
+void sleepticket(struct spinlock* lk)
 {
   struct proc *p = myproc();
 
@@ -472,19 +472,31 @@ void sleepticket(int ticket, struct spinlock* lk)
     release(lk);
   }
   // Go to sleep.
-  p->ticket = ticket;
+  // p->ticket = ticket;
   p->state = SLEEPING;
 
   sched();
 
   // Tidy up.
-  p->ticket = -1;
+  // p->state = RUNNABLE;
 
   // Reacquire original lock.
   if(lk != &ptable.lock){  //DOC: ticket
     release(&ptable.lock);
     acquire(lk);
   }
+}
+
+void wakeupticket(int ticket)
+{
+  struct proc *p;
+
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+    if(p->state == SLEEPING && p->ticket == ticket){
+      p->ticket = -1;
+      p->state = RUNNABLE;
+      break;
+    }
 }
 
 //PAGEBREAK!
