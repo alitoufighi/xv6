@@ -4,7 +4,7 @@
 #include "types.h"
 #include "spinlock.h"
 
-struct tl {
+struct ticketlock {
   // uint locked;       // Is the lock held?
   struct spinlock lk;
   int next_ticket;
@@ -17,10 +17,9 @@ struct tl {
   // that locked the lock.
 } ticketlock;
 
-void acquireticketlock(struct tl*);
-void releaseticketlock(struct tl*);
-
-void ticketlockinit(struct tl*);
+void acquireticketlock(struct ticketlock*);
+void releaseticketlock(struct ticketlock*);
+void ticketlockinit(struct ticketlock*);
 char* itoa(int val, int base);
 
 #endif

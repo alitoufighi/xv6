@@ -12,7 +12,7 @@ char* itoa(int val, int base){
 
 // readers priority
 void
-rwlockwrite(struct tl* rw_ticket)
+rwlockwrite(struct ticketlock* rw_ticket)
 {
 	acquireticketlock(rw_ticket);
 	cprintf("writing\n");
@@ -20,7 +20,7 @@ rwlockwrite(struct tl* rw_ticket)
 }
 
 void
-rwlockread(struct tl* rw_ticket, struct tl* readers_ticket, int* read_count)
+rwlockread(struct ticketlock* rw_ticket, struct ticketlock* readers_ticket, int* read_count)
 {
 	acquireticketlock(readers_ticket);
 	(*read_count)++;
@@ -44,7 +44,7 @@ rwlockread(struct tl* rw_ticket, struct tl* readers_ticket, int* read_count)
 
 // writers priority
 void
-rwlockread1(struct tl* rw_ticket)
+rwlockread1(struct ticketlock* rw_ticket)
 {
   acquireticketlock(rw_ticket);
   cprintf("reading\n");
@@ -52,7 +52,7 @@ rwlockread1(struct tl* rw_ticket)
 }
 
 void
-rwlockwrite1(struct tl* rw_ticket, struct tl* writers_ticket, int* write_count)
+rwlockwrite1(struct ticketlock* rw_ticket, struct ticketlock* writers_ticket, int* write_count)
 {
   acquireticketlock(writers_ticket);
   (*write_count)++;

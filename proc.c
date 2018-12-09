@@ -484,7 +484,7 @@ void sleepticket(void *chan)
 //   struct proc *p;
 
 //   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-//     if((p->state == SLEEPING) && ((struct tl*)p->chan == &ticketlock)){
+//     if((p->state == SLEEPING) && ((struct ticketlock*)p->chan == &ticketlock)){
 //       cprintf("Waking up %d\n", ticket);
 //       // p->ticket = -1;
 //       p->state = RUNNABLE;

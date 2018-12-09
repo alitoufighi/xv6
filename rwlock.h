@@ -3,9 +3,10 @@
 
 char* itoa(int value, int base);
 
-void rwlockwrite(struct tl* rw_ticket);
-void rwlockread(struct tl* rw_ticket, struct tl* readers_ticket, int* read_count);
-void rwlockread1(struct tl* rw_ticket);
-void rwlockwrite1(struct tl* rw_ticket, struct tl* writers_ticket, int* write_count);
+
+void rwlockwrite(struct ticketlock* rw_ticket);
+void rwlockread(struct ticketlock* rw_ticket, struct ticketlock* readers_ticket, int* read_count);
+void rwlockread1(struct ticketlock* rw_ticket);
+void rwlockwrite1(struct ticketlock* rw_ticket, struct ticketlock* readers_ticket, int* read_count);
 
 #endif
