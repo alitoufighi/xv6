@@ -17,7 +17,7 @@ struct tl {
   // that locked the lock.
 } ticketlock;
 
-void acquireticketlock();
-void releaseticketlock();
+void acquireticketlock(struct tl*);
+void releaseticketlock(struct tl*);
 
 #endif

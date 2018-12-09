@@ -5,22 +5,22 @@
 #include "defs.h"
 
 void
-acquireticketlock()
+acquireticketlock(struct tl* ticketlock)
 {
   pushcli();
-  int ticket = fetch_and_inc(&ticketlock.next_ticket, 1);
-  while(ticketlock.now_serving != ticket)
+  int ticket = fetch_and_inc(&ticketlock->next_ticket, 1);
+  while(ticketlock->now_serving != ticket)
     sleepticket(&ticketlock);
   popcli();
 }
 
 void
-releaseticketlock()
+releaseticketlock(struct tl* ticketlock)
 {
   pushcli();
-  if (ticketlock.now_serving >= ticketlock.next_ticket)
+  if (ticketlock->now_serving >= ticketlock->next_ticket)
     panic("release invalid ticket !");
-  fetch_and_inc(&ticketlock.now_serving, 1);
+  fetch_and_inc(&ticketlock->now_serving, 1);
   wakeup(&ticketlock); 
   popcli();
 }

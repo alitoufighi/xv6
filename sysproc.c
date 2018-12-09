@@ -104,10 +104,10 @@ int counter = 0;
 int
 sys_ticketlocktest(void)
 {
-  acquireticketlock();
+  acquireticketlock(&ticketlock);
   counter++;
   cprintf("Processing on: %d\n", counter);
-  releaseticketlock();
+  releaseticketlock(&ticketlock);
   return 0;
 }
 
