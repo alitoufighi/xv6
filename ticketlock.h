@@ -1,3 +1,5 @@
+#ifndef _TICKETLOCK_H_
+#define _TICKETLOCK_H_
 #include "types.h"
 #include "spinlock.h"
 
@@ -13,3 +15,4 @@ struct ticketlock {
   uint pcs[10];      // The call stack (an array of program counters)
   // that locked the lock.
 } ticketlock;
+#endif

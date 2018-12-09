@@ -1,3 +1,5 @@
+#ifndef _USER_H_
+#define _USER_H_
 struct stat;
 struct rtcdate;
 
@@ -39,3 +41,5 @@ void* memset(void*, int, uint);
 void* malloc(uint);
 void free(void*);
 int atoi(const char*);
+
+#endif
