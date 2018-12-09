@@ -30,7 +30,7 @@ rwlockread(struct ticketlock* rw_ticket, struct ticketlock* readers_ticket, int*
 	
 	releaseticketlock(readers_ticket);
 
-	cprintf("reading \n");
+	cprintf("reading\n");
 
 	acquireticketlock(readers_ticket);
 
@@ -64,7 +64,7 @@ rwlockwrite1(struct ticketlock* rw_ticket, struct ticketlock* writers_ticket, in
   
   releaseticketlock(writers_ticket);
 
-  cprintf("reading \n");
+  cprintf("writing\n");
 
   acquireticketlock(writers_ticket);
 
