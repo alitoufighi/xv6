@@ -1,3 +1,5 @@
+#ifndef _TRAPS_H_
+#define _TRAPS_H_
 // x86 trap and interrupt constants.
 
 // Processor-defined:
@@ -36,3 +38,5 @@
 #define IRQ_ERROR       19
 #define IRQ_SPURIOUS    31
 
+
+#endif

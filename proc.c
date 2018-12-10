@@ -6,7 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
-
+#include "ticketlock.h"
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -111,7 +111,7 @@ found:
   p->context = (struct context*)sp;
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
-
+  p->ticket = -1;
   return p;
 }
 
@@ -450,6 +450,47 @@ sleep(void *chan, struct spinlock *lk)
     acquire(lk);
   }
 }
+
+void sleepticket(void *chan)
+{
+  struct proc *p = myproc();
+
+  if(p == 0)
+    panic("sleep");
+
+  // Must acquire ptable.lock in order to
+  // change p->state and then call sched.
+  // Once we hold ptable.lock, we can be
+  // guaranteed that we won't miss any wakeup
+  // (wakeup runs with ptable.lock locked),
+  // so it's okay to release lk.
+  acquire(&ptable.lock);  //DOC: sleeplock1
+
+  // Go to sleep.
+  p->chan = chan;
+  p->state = SLEEPING;
+
+  popcli();
+  sched();
+  pushcli();
+  // Tidy up.
+  p->chan = 0;
+
+  release(&ptable.lock);
+}
+
+// void wakeupticket(int ticket)
+// {
+//   struct proc *p;
+
+//   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+//     if((p->state == SLEEPING) && ((struct tl*)p->chan == &ticketlock)){
+//       cprintf("Waking up %d\n", ticket);
+//       // p->ticket = -1;
+//       p->state = RUNNABLE;
+//       break;
+//     }
+// }
 
 //PAGEBREAK!
 // Wake up all processes sleeping on chan.

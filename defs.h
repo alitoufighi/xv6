@@ -1,3 +1,5 @@
+#ifndef _DEFS_H_
+#define _DEFS_H_
 struct buf;
 struct context;
 struct file;
@@ -116,6 +118,8 @@ void            scheduler(void) __attribute__((noreturn));
 void            sched(void);
 void            setproc(struct proc*);
 void            sleep(void*, struct spinlock*);
+void			sleepticket(void*);
+void            wakeupticket(int);
 void            userinit(void);
 int             wait(void);
 void            wakeup(void*);
@@ -188,3 +192,5 @@ void            clearpteu(pde_t *pgdir, char *uva);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))
+
+#endif
