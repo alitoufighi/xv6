@@ -125,29 +125,30 @@ sys_rwtest(void)
   ticketlockinit(&rw_ticket);
   ticketlockinit(&readers_ticket);
   int pattern, priority;
+  // char pattern;
   int read_count = 0, write_count = 0;
   if(argint(0, &pattern) < 0)
     return -1;
   if(argint(1, &priority) < 0)
     return -1;
   
-  char* pat_str = itoa(pattern, 2);
+  // char* pat_str = itoa(pattern, 2);
   int i;
-  for(i = 1; i < strlen(pat_str); ++i)
-  {
-    if(pat_str[i] == '0'){
-      if(priority == READERS_PRIORITY)
-        rwlockread(&rw_ticket, &readers_ticket, &read_count);
-      else
-        rwlockread1(&rw_ticket);
-    }
+  // for(i = 1; i < strlen(pat_str); ++i)
+  // {
+  if(pattern == 0){
+    if(priority == READERS_PRIORITY)
+      rwlockread(&rw_ticket, &readers_ticket, &read_count);
     else
-    {
-      if(priority == WRITERS_PRIORITY)
-        rwlockwrite(&rw_ticket);
-      else
-        rwlockwrite1(&rw_ticket, &writers_ticket, &write_count);
-    }
+      rwlockread1(&rw_ticket);
   }
+  else
+  {
+    if(priority == WRITERS_PRIORITY)
+      rwlockwrite(&rw_ticket);
+    else
+      rwlockwrite1(&rw_ticket, &writers_ticket, &write_count);
+  }
+  // }
   return 10;
 }
