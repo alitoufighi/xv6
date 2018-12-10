@@ -23,9 +23,9 @@ void
 rwlockread(struct ticketlock* rw_ticket, struct ticketlock* readers_ticket, int* read_count)
 {
 	acquireticketlock(readers_ticket);
-	*read_count++;
+	(*read_count)++;
 
-	if (*read_count == 1)
+	if ((*read_count) == 1)
 		acquireticketlock(rw_ticket);
 	
 	releaseticketlock(readers_ticket);
@@ -34,9 +34,9 @@ rwlockread(struct ticketlock* rw_ticket, struct ticketlock* readers_ticket, int*
 
 	acquireticketlock(readers_ticket);
 
-	*read_count--;
+	(*read_count)--;
 
-	if (*read_count == 0)
+	if ((*read_count) == 0)
 		releaseticketlock(rw_ticket);
 	
 	releaseticketlock(readers_ticket);
@@ -55,9 +55,9 @@ void
 rwlockwrite1(struct ticketlock* rw_ticket, struct ticketlock* writers_ticket, int* write_count)
 {
   acquireticketlock(writers_ticket);
-  *write_count++;
+  (*write_count)++;
 
-  if (*write_count == 1)
+  if ((*write_count) == 1)
     acquireticketlock(rw_ticket);
   
   releaseticketlock(writers_ticket);
@@ -66,9 +66,9 @@ rwlockwrite1(struct ticketlock* rw_ticket, struct ticketlock* writers_ticket, in
 
   acquireticketlock(writers_ticket);
 
-  *write_count--;
+  (*write_count)--;
 
-  if (*write_count == 0)
+  if ((*write_count) == 0)
     releaseticketlock(rw_ticket);
   
   releaseticketlock(writers_ticket);
