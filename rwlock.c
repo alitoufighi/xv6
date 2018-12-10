@@ -2,13 +2,13 @@
 #include "x86.h"
 #include "defs.h"
 
-char* itoa(int val, int base){
-  static char buf[32] = {0};
-  int i;
-  for(i = 30; val && i; --i, val /= base)
-    buf[i] = "0123456789abcdef"[val % base];
-  return &buf[i+1];
-}
+// char* itoa(int val, int base){
+//   static char buf[32] = {0};
+//   int i;
+//   for(i = 30; val && i; --i, val /= base)
+//     buf[i] = "0123456789abcdef"[val % base];
+//   return &buf[i+1];
+// }
 
 // readers priority
 void
