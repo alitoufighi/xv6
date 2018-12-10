@@ -5,7 +5,7 @@
 char* itoa(int val, int base){
   static char buf[32] = {0};
   int i;
-  for(i = 30; val && i ; --i, val /= base)
+  for(i = 30; val && i; --i, val /= base)
     buf[i] = "0123456789abcdef"[val % base];
   return &buf[i+1];
 }
@@ -23,7 +23,7 @@ void
 rwlockread(struct ticketlock* rw_ticket, struct ticketlock* readers_ticket, int* read_count)
 {
 	acquireticketlock(readers_ticket);
-	(*read_count)++;
+	*read_count++;
 
 	if (*read_count == 1)
 		acquireticketlock(rw_ticket);
@@ -34,7 +34,7 @@ rwlockread(struct ticketlock* rw_ticket, struct ticketlock* readers_ticket, int*
 
 	acquireticketlock(readers_ticket);
 
-	(*read_count)--;
+	*read_count--;
 
 	if (*read_count == 0)
 		releaseticketlock(rw_ticket);
@@ -55,7 +55,7 @@ void
 rwlockwrite1(struct ticketlock* rw_ticket, struct ticketlock* writers_ticket, int* write_count)
 {
   acquireticketlock(writers_ticket);
-  (*write_count)++;
+  *write_count++;
 
   if (*write_count == 1)
     acquireticketlock(rw_ticket);
@@ -66,7 +66,7 @@ rwlockwrite1(struct ticketlock* rw_ticket, struct ticketlock* writers_ticket, in
 
   acquireticketlock(writers_ticket);
 
-  (*write_count)--;
+  *write_count--;
 
   if (*write_count == 0)
     releaseticketlock(rw_ticket);
