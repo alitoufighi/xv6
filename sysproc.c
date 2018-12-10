@@ -121,22 +121,19 @@ sys_rwinit(void)
 int
 sys_rwtest(void)
 {
+  #define READ 0
+  #define WRITE 1
   struct ticketlock rw_ticket, readers_ticket, writers_ticket;
   ticketlockinit(&rw_ticket);
   ticketlockinit(&readers_ticket);
   int pattern, priority;
-  // char pattern;
   int read_count = 0, write_count = 0;
   if(argint(0, &pattern) < 0)
     return -1;
   if(argint(1, &priority) < 0)
     return -1;
   
-  // char* pat_str = itoa(pattern, 2);
-  int i;
-  // for(i = 1; i < strlen(pat_str); ++i)
-  // {
-  if(pattern == 0){
+  if(pattern == READ){
     if(priority == READERS_PRIORITY)
       rwlockread(&rw_ticket, &readers_ticket, &read_count);
     else
@@ -149,6 +146,5 @@ sys_rwtest(void)
     else
       rwlockwrite1(&rw_ticket, &writers_ticket, &write_count);
   }
-  // }
   return 10;
 }
