@@ -25,5 +25,6 @@
 #define SYS_set_priority  22
 #define SYS_rand   23
 #define SYS_change_level 24
+#define SYS_set_lottery 25
 
 #endif

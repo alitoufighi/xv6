@@ -5,6 +5,6 @@ typedef unsigned short ushort;
 typedef unsigned char  uchar;
 typedef uint pde_t;
 
-#define NULL 0x0000
+#define NULL 0x00000000
 
 #endif

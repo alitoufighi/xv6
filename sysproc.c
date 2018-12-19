@@ -93,7 +93,6 @@ sys_uptime(void)
 int
 sys_rand(void){
   static unsigned long next = 1;
-    // printf()
   int rand_max;
 
   if (argint(0, &rand_max) < 0)
@@ -101,14 +100,6 @@ sys_rand(void){
   
   next = next * 1103515245 + 12345;
   int rand = ((unsigned)(next/65536) % 32768);
-   //above are the default implemenation of random generator with random max value 32768
-   //need to map it to the 
-  
   int result = rand % rand_max+1;
-  // acquire(&tickslock);
-  // unsigned long result = ticks * 1103515245 + 12345;
-  // // result = (result / 65536) % 32768;
-  // result = result % rand_max;
-  // release(&tickslock);
   return (int)result;
 }

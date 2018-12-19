@@ -120,7 +120,6 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
   p->level = PRIORITY;
-  // p->priority = p->pid;
   p->priority = 1000000;
   return p;
 }
@@ -347,7 +346,39 @@ int sys_set_priority(void)
   return 1;
 }
 
-extern int fcfs_index = 1;
+int sys_set_lottery(void)
+{
+  int lottery;
+  if (argint(0, &lottery) < 0)
+    return -1;
+  
+  if (lottery <= 0)
+    return -1;
+  
+  acquire(&ptable.lock);
+  struct proc *p = myproc();
+  if (p->level != LOTTERY)
+    return -1;
+  
+  p->priority = lottery;
+  
+  p->state = RUNNABLE;
+  
+  sched();
+
+  release(&ptable.lock);
+
+  return 1;
+}
+
+int
+rand_number(int rand_max){
+  static unsigned long next = 1;
+  next = next * 1103515245 + 12345;
+  int rand = ((unsigned)(next/65536) % 32768);
+  int result = rand % rand_max+1;
+  return (int)result;
+}
 
 int sys_change_level(void)
 {
@@ -380,9 +411,9 @@ int sys_change_level(void)
     }
     case LOTTERY:
     {
-      cprintf("lottery chagned to fcfs\n");
+      cprintf("level chagned to lottery\n");
 
-      p->priority = 10;
+      p->priority = 1;
       break;
     }
   }
@@ -396,6 +427,8 @@ int sys_change_level(void)
   return 1;
 }
 
+int fcfs_index = 1;
+
 void
 scheduler(void)
 {
@@ -403,15 +436,16 @@ scheduler(void)
   struct cpu *c = mycpu();
   c->proc = 0;
   
-  for(;;){
+  for(;;)
+  {
     // Enable interrupts on this processor.
     sti();
 
-    uint max_prio = 0;
-    uint min_entrant = 0xFFFFFF;
-
     // Loop over process table looking for process to run.
+
     acquire(&ptable.lock);
+  
+    int lottery_sum = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     {
       if(p->state != RUNNABLE)
@@ -419,34 +453,75 @@ scheduler(void)
       
       if (p->level == LOTTERY)
       {
+        lottery_sum += p->priority;
       }
+    }
 
-      else if (p->level == FCFS)
+    if(lottery_sum == 0)
+      lottery_sum = 1;
+
+    int random_lottery = rand_number(lottery_sum);
+    
+    uint max_prio = 0;
+    uint min_entrant = 0xFFFFFF;
+
+    p1 = NULL;
+    p2 = NULL;
+    p3 = NULL;
+
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+    {
+      if(p->state != RUNNABLE)
+        continue;
+      
+      cprintf("type : %d \n", p->level);
+      if (p->level == LOTTERY)
       {
-        if (p->level < min_entrant)
+        if (random_lottery >= p->priority)
+          random_lottery -= p->priority;
+        else
         {
-          min_entrant = p->pid;
-          p2 = p;
+          cprintf("pid number : %d selected \n", p->pid);
+          if (p1 != NULL)
+            p1 = p;
         }
       }
-                
-
-      else if(p->level == PRIORITY)
-        if (p->priority > max_prio)
+      
+      if (p->level == FCFS)
+      {
+        if (p->level <= min_entrant)
         {
+          min_entrant = p->priority;
+          p2 = p;
+        }
+      }         
+
+      if(p->level == PRIORITY)
+      {
+        cprintf("selected1\n");
+
+        if (p->priority >= max_prio)
+        {
+          cprintf("selected\n");
           max_prio = p->priority;
           p3 = p;
+        }
       }
     }
 
     if (p1 != NULL)
+    {
       p = p1;
-    
-    else if (p2 != NULL && p2->state == RUNNABLE)
+    }
+    else if (p2 != NULL)
+    {
       p = p2;
-    
+    }
     else if (p3 != NULL)
+    {
       p = p3;
+      cprintf("prio selected\n");
+    }
     
     else 
       cprintf("no process found!\n");
@@ -460,7 +535,7 @@ scheduler(void)
 
     swtch(&(c->scheduler), p->context);
     switchkvm();
-    // cprintf("priority : %d \n", p->priority);
+
     // Process is done running for now.
     // It should have changed its p->state before coming back.
     c->proc = 0;
