@@ -35,7 +35,7 @@ struct context {
 };
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
-enum schedulerLevel { LOTTERY, FCFS, PRIORITY };
+enum schedulerLevel { LOTTERY = 1, FCFS = 2, PRIORITY = 3 };
 
 // Per-process state
 struct proc {

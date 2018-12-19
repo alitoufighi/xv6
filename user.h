@@ -27,6 +27,7 @@ int sleep(int);
 int uptime(void);
 int set_priority(uint);
 int rand(int);
+int change_level(uint);
 
 // ulib.c
 int stat(const char*, struct stat*);

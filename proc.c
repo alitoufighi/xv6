@@ -321,50 +321,6 @@ wait(void)
   }
 }
 
-//PAGEBREAK: 42
-// Per-CPU process scheduler.
-// Each CPU calls scheduler() after setting itself up.
-// Scheduler never returns.  It loops, doing:
-//  - choose a process to run
-//  - swtch to start running that process
-//  - eventually that process transfers control
-//      via swtch back to the scheduler.
-// void
-// scheduler(void)
-// {
-//   struct proc *p;
-//   struct cpu *c = mycpu();
-//   c->proc = 0;
-  
-//   for(;;){
-//     // Enable interrupts on this processor.
-//     sti();
-
-//     // Loop over process table looking for process to run.
-//     acquire(&ptable.lock);
-//     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-//       if(p->state != RUNNABLE)
-//         continue;
-
-//       // Switch to chosen process.  It is the process's job
-//       // to release ptable.lock and then reacquire it
-//       // before jumping back to us.
-//       c->proc = p;
-//       switchuvm(p);
-//       p->state = RUNNING;
-
-//       swtch(&(c->scheduler), p->context);
-//       switchkvm();
-
-//       // Process is done running for now.
-//       // It should have changed its p->state before coming back.
-//       c->proc = 0;
-//     }
-//     release(&ptable.lock);
-
-//   }
-// }
-
 int sys_set_priority(void)
 {
   int priority;
@@ -391,6 +347,55 @@ int sys_set_priority(void)
   return 1;
 }
 
+extern int fcfs_index = 1;
+
+int sys_change_level(void)
+{
+  int level;
+
+  if (argint(0, &level) < 0)
+    return -1;
+  
+  if (level <= 0 || level >= 3)
+    return -1;
+  
+  acquire(&ptable.lock);
+  struct proc *p = myproc();
+  
+  p->level = level;
+  
+  switch (level)
+  {
+    case PRIORITY:
+    {
+      p->priority = 100;
+      break;
+    }
+    case FCFS:
+    {
+      cprintf("level chagned to fcfs\n");
+      fcfs_index++;
+      p->priority = fcfs_index;
+      break;
+    }
+    case LOTTERY:
+    {
+      cprintf("lottery chagned to fcfs\n");
+
+      p->priority = 10;
+      break;
+    }
+  }
+
+  p->state = RUNNABLE;
+
+  sched();
+
+  release(&ptable.lock);
+
+  return 1;
+}
+
 void
 scheduler(void)
 {
@@ -403,6 +408,7 @@ scheduler(void)
     sti();
 
     uint max_prio = 0;
+    uint min_entrant = 0xFFFFFF;
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
@@ -417,31 +423,26 @@ scheduler(void)
 
       else if (p->level == FCFS)
       {
-      }
-
-      else if(p->level == PRIORITY)
-      {
-        // cprintf("%d\n", p->pid);
-        // cprintf("%d\n", p->priority);
-        // cprintf("%d\n", max_prio);
-
-        if (p->priority > max_prio)
+        if (p->level < min_entrant)
         {
-          // cprintf("%d\n", p->pid);
-          // cprintf("%d\n", p->priority);
-          max_prio = p->priority;
-          p3 = p;
+          min_entrant = p->pid;
+          p2 = p;
         }
       }
-    }
+                
 
-    // if (p3->priority > 2)
-      // cprintf("max_prio selected : %d \n", p3->priority);
+      else if(p->level == PRIORITY)
+        if (p->priority > max_prio)
+        {
+          max_prio = p->priority;
+          p3 = p;
+      }
+    }
 
     if (p1 != NULL)
       p = p1;
     
-    else if (p2 != NULL)
+    else if (p2 != NULL && p2->state == RUNNABLE)
       p = p2;
     
     else if (p3 != NULL)
@@ -468,15 +469,6 @@ scheduler(void)
 
   }
 }
-
-
-// void
-// lottary_scheduler(void)
-// {
-//   int num_of_tickets = 480;
-//   int ticket = rand(num_of_tickets);
-
-// }
 
 // Enter scheduler.  Must hold only ptable.lock
 // and have changed proc->state. Saves and restores
@@ -562,10 +554,6 @@ sleep(void *chan, struct spinlock *lk)
   p->chan = chan;
   p->state = SLEEPING;
   
-  if(p->pid == 3)
-  {
-    // cprintf("sleeping parent\n");
-  }
   sched();
 
   // Tidy up.
