@@ -119,6 +119,8 @@ found:
   p->context = (struct context*)sp;
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
+  
+  // First of all, the new processes are in priority queue (level 3)
   p->level = PRIORITY;
   p->priority = 1000000;
   return p;
@@ -382,6 +384,7 @@ rand_number(int rand_max){
 
 int sys_change_level(void)
 {
+  static int fcfs_index = 1;
   int level;
 
   if (argint(0, &level) < 0)
@@ -399,6 +402,7 @@ int sys_change_level(void)
   {
     case PRIORITY:
     {
+      cprintf("Level of %d changed to priority\n", p->pid);
       p->priority = 100;
       break;
     }
@@ -411,8 +415,7 @@ int sys_change_level(void)
     }
     case LOTTERY:
     {
-      cprintf("level chagned to lottery\n");
-
+      cprintf("Level of %d changed to lottery\n", p->pid);
       p->priority = 1;
       break;
     }

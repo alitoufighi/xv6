@@ -8,7 +8,6 @@ int main()
 
 	pid = getpid();
 
-	printf(1, "%d current\n", pid);
 	change_level(2);
 
 	for (int i = 0; i < NCHILD; i++)
@@ -28,16 +27,16 @@ int main()
 		for (long int i = 0; i < 10000; i++)
 			for (long int j = 0; j < 10000; j++);
 		printf(1, "Number is %d\n", getpid());
+
 	}
 
 	else
 	{
-		printf(1, "waiting\n");
+		// printf(1, "waiting\n");
 		for (int i = 0; i < NCHILD; i++)
 			wait();
 		
 		printf(1, "user program finished\n");
-		exit();
 	}
 
 	exit();
