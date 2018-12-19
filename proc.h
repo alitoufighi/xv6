@@ -33,6 +33,7 @@ struct context {
 };
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
+enum schedulerLevel { LOTTERY, FCFS, PRIORITY };
 
 // Per-process state
 struct proc {
@@ -48,6 +49,8 @@ struct proc {
   int killed;                  // If non-zero, have been killed
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
+  uint priority;               // Priority or ticket
+  enum schedulerLevel level;   // Scheduling level
   char name[16];               // Process name (debugging)
 };
 
