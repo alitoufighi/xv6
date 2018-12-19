@@ -51,10 +51,13 @@ struct proc {
   int killed;                  // If non-zero, have been killed
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
-  uint priority;               // Priority or ticket
+  int priority;               // Priority or ticket
   enum schedulerLevel level;   // Scheduling level
   char name[16];               // Process name (debugging)
 };
+
+extern int fcfs_index;
+extern int lottery_sum;
 
 // Process memory is laid out contiguously, low addresses first:
 //   text
