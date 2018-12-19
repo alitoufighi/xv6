@@ -364,6 +364,29 @@ wait(void)
 //   }
 // }
 
+int sys_set_priority(void)
+{
+  int priority;
+  if (argint(0, &priority) < 0)
+    return -1;
+  
+  if (priority <= 0)
+    return -1;
+  
+  acquire(&ptable.lock);
+  struct proc *p = myproc();
+  if (p->level != PRIORITY)
+    return -1;
+  
+  p->priority = priority;
+  p->state = RUNNABLE;
+  sched();
+
+  release(&ptable.lock);
+
+  return 1;
+}
+
 void
 scheduler(void)
 {
