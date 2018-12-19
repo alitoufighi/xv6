@@ -1,3 +1,5 @@
+#ifndef _SYSCALL_H_
+#define _SYSCALL_H_
 // System call numbers
 #define SYS_fork    1
 #define SYS_exit    2
@@ -20,3 +22,6 @@
 #define SYS_link   19
 #define SYS_mkdir  20
 #define SYS_close  21
+#define SYS_set_priority  22
+
+#endif
