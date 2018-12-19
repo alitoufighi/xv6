@@ -105,5 +105,10 @@ sys_rand(void){
    //need to map it to the 
   
   int result = rand % rand_max+1;
-  return result;
+  // acquire(&tickslock);
+  // unsigned long result = ticks * 1103515245 + 12345;
+  // // result = (result / 65536) % 32768;
+  // result = result % rand_max;
+  // release(&tickslock);
+  return (int)result;
 }

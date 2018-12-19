@@ -120,7 +120,8 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
   p->level = PRIORITY;
-  p->priority = p->pid;
+  // p->priority = p->pid;
+  p->priority = 1000000;
   return p;
 }
 
@@ -379,7 +380,10 @@ int sys_set_priority(void)
     return -1;
   
   p->priority = priority;
+  
   p->state = RUNNABLE;
+  
+  // cprintf("pid: %d, set priority: %d \n", p->pid, p->priority);
   sched();
 
   release(&ptable.lock);
@@ -431,6 +435,9 @@ scheduler(void)
       }
     }
 
+    // if (p3->priority > 2)
+      // cprintf("max_prio selected : %d \n", p3->priority);
+
     if (p1 != NULL)
       p = p1;
     
@@ -452,7 +459,7 @@ scheduler(void)
 
     swtch(&(c->scheduler), p->context);
     switchkvm();
-
+    // cprintf("priority : %d \n", p->priority);
     // Process is done running for now.
     // It should have changed its p->state before coming back.
     c->proc = 0;
@@ -554,7 +561,11 @@ sleep(void *chan, struct spinlock *lk)
   // Go to sleep.
   p->chan = chan;
   p->state = SLEEPING;
-
+  
+  if(p->pid == 3)
+  {
+    // cprintf("sleeping parent\n");
+  }
   sched();
 
   // Tidy up.
