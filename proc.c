@@ -21,12 +21,12 @@ extern void trapret(void);
 static void wakeup1(void *chan);
 
 // generates a pseudo-random number using LCG between 0 and M (inclusive)
-int rand(int M) {
-  static unsigned long X = 1;
-  unsigned long a = 1103515245, c = 12345;
-  X = a * X + c; 
-  return ((unsigned int)(X / 65536) % 32768) % M + 1;
-}
+// int rand(int M) {
+//   static unsigned long X = 1;
+//   unsigned long a = 1103515245, c = 12345;
+//   X = a * X + c; 
+//   return ((unsigned int)(X / 65536) % 32768) % M + 1;
+// }
 
 void
 pinit(void)
