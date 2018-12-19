@@ -94,4 +94,20 @@ sys_uptime(void)
 int sys_set_priority(void)
 {
   int priority;
+  if (argint(0, &priority) < 0)
+    return -1;
+  
+  if (priority <= 0)
+    return -1;
+
+  struct proc *p = myproc();
+
+  if (p->level != PRIORITY)
+    return -1;
+  
+  p->priority = priority;
+
+  sched();
+  
+  return 1;
 }
