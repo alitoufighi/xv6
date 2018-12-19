@@ -119,8 +119,9 @@ found:
   p->context = (struct context*)sp;
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
+  
+  // First of all, the new processes are in priority queue (level 3)
   p->level = PRIORITY;
-  // p->priority = p->pid;
   p->priority = 1000000;
   return p;
 }
@@ -347,10 +348,10 @@ int sys_set_priority(void)
   return 1;
 }
 
-extern int fcfs_index = 1;
 
 int sys_change_level(void)
 {
+  static int fcfs_index = 1;
   int level;
 
   if (argint(0, &level) < 0)
@@ -368,20 +369,19 @@ int sys_change_level(void)
   {
     case PRIORITY:
     {
+      cprintf("Level of %d changed to priority\n", p->pid);
       p->priority = 100;
       break;
     }
     case FCFS:
     {
-      cprintf("level chagned to fcfs\n");
-      fcfs_index++;
-      p->priority = fcfs_index;
+      cprintf("Level of %d changed to FCFS\n", p->pid);
+      p->priority = ++fcfs_index;
       break;
     }
     case LOTTERY:
     {
-      cprintf("lottery chagned to fcfs\n");
-
+      cprintf("Level of %d changed to lottery\n", p->pid);
       p->priority = 10;
       break;
     }

@@ -8,7 +8,6 @@ int main()
 
 	pid = getpid();
 
-	printf(1, "%d current\n", pid);
 	change_level(2);
 
 	for (int i = 0; i < NCHILD; i++)
@@ -22,20 +21,17 @@ int main()
 	
 	else if (pid == 0)
 	{
-		for (long int i = 0; i < 1000000000; i++);
 		change_level(2);
-		for (long int i = 0; i < 1000000000; i++);
-		printf(1, "Number is %d\n", getpid());
+		printf(1, "Process \"%d\"s level changed to FCFS\n", getpid());
 	}
 
 	else
 	{
-		printf(1, "waiting\n");
+		// printf(1, "waiting\n");
 		for (int i = 0; i < NCHILD; i++)
 			wait();
 		
 		printf(1, "user program finished\n");
-		exit();
 	}
 
 	exit();

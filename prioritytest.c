@@ -1,13 +1,13 @@
 #include "types.h"
 #include "user.h"
 #define NCHILD 10
-
+#define PARENT_PRIORITY 10000
 int main()
 {
 	int pid;
 
 	pid = getpid();
-	set_priority(10000);
+	set_priority(PARENT_PRIORITY);
 
 	for (int i = 0; i < NCHILD; i++)
 		if (pid > 0)
@@ -21,23 +21,15 @@ int main()
 	else if (pid == 0)
 	{
         int random = rand(NCHILD) + 2;
-        // printf(1, "ANumbers are %d\t%d\n", random, getpid());
-		for (long int i = 0; i < 1000000000; i++);
         set_priority(random);
-		for (long int i = 0; i < 1000000000; i++);
-		printf(1, "BNumbers are %d\t%d\n", random, getpid());
+		printf(1, "Child  - Priority: %d\t Pid: %d\n", random, getpid());
 	}
 
 	else
 	{
-		printf(2, "waiting\n");
+        printf(1, "Parent - Priority: %d Pid: %d\n", PARENT_PRIORITY, getpid());
 		for (int i = 0; i < NCHILD; i++)
-			wait();
-		
-		// printf(1, "user program finished\n");
-		exit();
+			wait();   
 	}
-
-	// printf(2, "child pid %d finished %d \n", getpid());
 	exit();
 }
