@@ -22,9 +22,11 @@ int main()
 	
 	else if (pid == 0)
 	{
-		for (long int i = 0; i < 1000000000; i++);
+		for (long int i = 0; i < 10000; i++)
+			for (long int j = 0; j < 10000; j++);
 		change_level(2);
-		for (long int i = 0; i < 1000000000; i++);
+		for (long int i = 0; i < 10000; i++)
+			for (long int j = 0; j < 10000; j++);
 		printf(1, "Number is %d\n", getpid());
 	}
 

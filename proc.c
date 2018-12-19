@@ -404,7 +404,7 @@ int sys_change_level(void)
     }
     case FCFS:
     {
-      cprintf("level chagned to fcfs\n");
+      cprintf("level chagned to fcfs : %d\n", fcfs_index + 1);
       fcfs_index++;
       p->priority = fcfs_index;
       break;
@@ -434,7 +434,7 @@ scheduler(void)
 {
   struct proc *p, *p1 = NULL, *p2 = NULL, *p3 = NULL;
   struct cpu *c = mycpu();
-  c->proc = 0;
+  // c->proc = 0;
   
   for(;;)
   {
@@ -474,7 +474,6 @@ scheduler(void)
       if(p->state != RUNNABLE)
         continue;
       
-      cprintf("type : %d \n", p->level);
       if (p->level == LOTTERY)
       {
         if (random_lottery >= p->priority)
@@ -498,11 +497,8 @@ scheduler(void)
 
       if(p->level == PRIORITY)
       {
-        cprintf("selected1\n");
-
         if (p->priority >= max_prio)
         {
-          cprintf("selected\n");
           max_prio = p->priority;
           p3 = p;
         }
@@ -520,11 +516,12 @@ scheduler(void)
     else if (p3 != NULL)
     {
       p = p3;
-      cprintf("prio selected\n");
     }
-    
-    else 
-      cprintf("no process found!\n");
+    else
+    {
+      release(&ptable.lock);
+      continue;
+    }
 
     // Switch to chosen process.  It is the process's job
     // to release ptable.lock and then reacquire it
@@ -539,9 +536,7 @@ scheduler(void)
     // Process is done running for now.
     // It should have changed its p->state before coming back.
     c->proc = 0;
-
     release(&ptable.lock);
-
   }
 }
 

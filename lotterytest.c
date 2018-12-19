@@ -33,6 +33,8 @@ int main()
 
 	else
 	{
+		set_lottery(1);
+
 		printf(1, "waiting\n");
 		for (int i = 0; i < NCHILD; i++)
 			wait();
