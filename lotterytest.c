@@ -8,7 +8,7 @@ int main()
 
 	pid = getpid();
 
-	printf(1, "%d current\n", pid);
+	// printf(1, "%d current\n", pid);
 	change_level(1);
 	set_lottery(10000);
 
@@ -23,24 +23,21 @@ int main()
 	
 	else if (pid == 0)
 	{
-		int random = rand(NCHILD) + 2;
-		for (long int i = 0; i < 1000000000; i++);
+		int random = rand(NCHILD) + 1; // +1 to make it a natural number
 		change_level(1);
 		set_lottery(random);
-		for (long int i = 0; i < 1000000000; i++);
-		printf(1, "Numbers are %d\t%d\n", random, getpid());
+		printf(1, "Lottery ticket %d set for process %d\n", random, getpid());
 	}
 
 	else
 	{
 		set_lottery(1);
 
-		printf(1, "waiting\n");
+		printf(1, "Waiting for children\n");
 		for (int i = 0; i < NCHILD; i++)
 			wait();
 		
-		printf(1, "user program finished\n");
-		exit();
+		printf(1, "User program finished\n");
 	}
 
 	exit();
