@@ -145,7 +145,7 @@ found:
   
   // First of all, the new processes are in priority queue (level 3)
   p->level = PRIORITY;
-  p->priority = 1000000;
+  p->priority = 1;
   p->ctime = ticks;
   p->index = index++;
   return p;
@@ -385,7 +385,11 @@ int sys_set_lottery(void)
   acquire(&ptable.lock);
   struct proc *p = myproc();
   if (p->level != LOTTERY)
+  {
+    release(&ptable.lock);
     return -1;
+
+  }
   
   p->priority = lottery;
   

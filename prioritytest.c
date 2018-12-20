@@ -1,7 +1,7 @@
 #include "types.h"
 #include "user.h"
 #define NCHILD 10
-#define PARENT_PRIORITY 10000
+#define PARENT_PRIORITY 1
 int main()
 {
 	int pid;

@@ -9,8 +9,8 @@ int main()
 	pid = getpid();
 
 	// printf(1, "%d current\n", pid);
-	change_level(1);
-	set_lottery(10000);
+	// change_level(1);
+	set_priority(2);
 
 	for (int i = 0; i < NCHILD; i++)
 		if (pid > 0)
@@ -31,7 +31,11 @@ int main()
 
 	else
 	{
-		set_lottery(1);
+		for(int i = 0; i < 10000; ++i)
+			for(int j = 0; j < 10000; j++); // waiting randomly before changing level
+		
+		pstatus();
+		// set_lottery(1);
 
 		printf(1, "Waiting for children\n");
 		for (int i = 0; i < NCHILD; i++)
