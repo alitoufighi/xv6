@@ -29,6 +29,7 @@ int set_priority(uint);
 int rand(int);
 int change_level(uint);
 int set_lottery(uint);
+int pstatus(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

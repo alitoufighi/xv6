@@ -107,6 +107,7 @@ extern int sys_set_priority(void);
 extern int sys_rand(void);
 extern int sys_change_level(void);
 extern int sys_set_lottery(void);
+extern int sys_pstatus(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -134,7 +135,7 @@ static int (*syscalls[])(void) = {
 [SYS_rand]    sys_rand,
 [SYS_change_level] sys_change_level,
 [SYS_set_lottery] sys_set_lottery,
-
+[SYS_pstatus] sys_pstatus,
 };
 
 void

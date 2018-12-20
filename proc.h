@@ -51,7 +51,8 @@ struct proc {
   int killed;                  // If non-zero, have been killed
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
-  int priority;               // Priority or ticket
+  int priority;                // Priority or ticket (Subject to change)
+  uint ctime;                   // Process creation time
   enum schedulerLevel level;   // Scheduling level
   char name[16];               // Process name (debugging)
 };

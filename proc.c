@@ -146,6 +146,7 @@ found:
   // First of all, the new processes are in priority queue (level 3)
   p->level = PRIORITY;
   p->priority = 1000000;
+  p->ctime = ticks;
   return p;
 }
 
@@ -444,7 +445,61 @@ int sys_change_level(void)
   return 1;
 }
 
-int fcfs_index = 1;
+int
+sys_pstatus(void)
+{
+  struct proc *p;
+  
+  cprintf("name\t\tpid\tstate\t\tqueue\tprio\ttickets\tcreation time\n");
+  cprintf("---------------------------------------------------------\n");
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+    if(p->state == UNUSED)
+      continue;
+
+    char state[9];
+    switch (p->state){
+      case SLEEPING: {
+        strncpy(state, "SLEEPING", 9);
+        break;
+      }
+      case RUNNING: {
+        strncpy(state, "RUNNING", 9);
+        break;
+      }
+      case ZOMBIE: {
+        strncpy(state, "ZOMBIE", 9);
+        break;
+      }
+      case RUNNABLE: {
+        strncpy(state, "RUNNABLE", 9);
+        break;
+      }
+      case EMBRYO: {
+        strncpy(state, "EMBRYO", 9);
+        break;
+      }
+      case UNUSED: {
+        strncpy(state, "UNUSED", 9);
+        break;
+      }
+      default: {
+        strncpy(state, "N/A", 9);
+        break;
+      }
+    }
+      cprintf("%s\t%s%d\t%s\t%s%d\t%d\t%d\t%d\n",
+        p->name, (strlen(p->name)<10)?"        ":"" , p->pid, state,
+        (strlen(state)<8)?"        ":"",p->level, (p->level == PRIORITY)?p->priority:-1,
+        (p->level==LOTTERY)?p->priority:-1, p->ctime
+      );
+  }
+  release(&ptable.lock);
+  return 1;
+}
+
+int fcfs_index = 1; //TODO: THIS IS WRONG! WE NEED TO KEEP CREATION TIME IN PCB
 
 void
 scheduler(void)
