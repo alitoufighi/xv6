@@ -13,23 +13,25 @@ int main()
 	set_priority(2);
 
 	for (int i = 0; i < NCHILD; i++)
-		if (pid > 0)
-			pid = fork();
-	
-	if (pid < 0)
 	{
-		printf(2, "fork error\n");
+		pid = fork();
+	
+		if (pid < 0)
+		{
+			printf(2, "fork error\n");
+		}
+		
+		else if (pid == 0)
+		{
+			int random = rand(NCHILD) + 1; // +1 to make it a natural number
+			change_level(1);
+			set_lottery(random);
+			printf(1, "Lottery ticket %d set for process %d\n", random, getpid());
+			break;
+		}
 	}
 	
-	else if (pid == 0)
-	{
-		int random = rand(NCHILD) + 1; // +1 to make it a natural number
-		change_level(1);
-		set_lottery(random);
-		printf(1, "Lottery ticket %d set for process %d\n", random, getpid());
-	}
-
-	else
+	if (pid > 0)
 	{
 		for(int i = 0; i < 10000; ++i)
 			for(int j = 0; j < 10000; j++); // waiting randomly before changing level
@@ -43,6 +45,6 @@ int main()
 		
 		printf(1, "User program finished\n");
 	}
-
+	
 	exit();
 }

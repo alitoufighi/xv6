@@ -359,8 +359,10 @@ int sys_set_priority(void)
   acquire(&ptable.lock);
   struct proc *p = myproc();
   if (p->level != PRIORITY)
+  {
+    release(&ptable.lock);
     return -1;
-  
+  }
   p->priority = priority;
   
   p->state = RUNNABLE;
