@@ -479,7 +479,7 @@ scheduler(void)
 
     int random_lottery = rand_number(lottery_sum);
     
-    uint max_prio = 0;
+    uint min_prio = 0xFFFFFF;
     uint min_entrant = 0xFFFFFF;
 
     p1 = NULL;
@@ -513,9 +513,9 @@ scheduler(void)
 
       else if(p->level == PRIORITY)
       {
-        if (p->priority > max_prio)
+        if (p->priority < min_prio)
         {
-          max_prio = p->priority;
+          min_prio = p->priority;
           p3 = p;
         }
       }
