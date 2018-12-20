@@ -119,7 +119,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
-
+  static int index = 0;
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -147,6 +147,7 @@ found:
   p->level = PRIORITY;
   p->priority = 1000000;
   p->ctime = ticks;
+  p->index = index++;
   return p;
 }
 
@@ -400,7 +401,7 @@ int sys_set_lottery(void)
 
 int sys_change_level(void)
 {
-  static int fcfs_index = 1;
+  // static int fcfs_index = 1;
   int level;
 
   if (argint(0, &level) < 0)
@@ -419,19 +420,20 @@ int sys_change_level(void)
     case PRIORITY:
     {
       p->priority = 100; // ?
-      cprintf("SYSLOG: Level of process %d changed to priority\n", p->pid);
+      cprintf("SYSLOG: Level of process %d changed to priority with priority of %d\n", p->pid, p->priority);
       break;
     }
     case FCFS:
     {
-      p->priority = ++fcfs_index;
-      cprintf("SYSLOG: Level of process %d changed to FCFS with index of %d\n", p->pid, fcfs_index);
+      // p->priority = ++fcfs_index;
+      p->priority = p->ctime;
+      cprintf("SYSLOG: Level of process %d changed to FCFS with index of %d\n", p->pid, p->priority);
       break;
     }
     case LOTTERY:
     {
       p->priority = 1;
-      cprintf("SYSLOG: Level of process %d changed to lottery with %d ticket(s)\n", p->pid, 1);
+      cprintf("SYSLOG: Level of process %d changed to lottery with %d ticket(s)\n", p->pid, p->priority);
       break;
     }
   }
@@ -451,7 +453,7 @@ sys_pstatus(void)
   struct proc *p;
   
   cprintf("name\t\tpid\tstate\t\tqueue\tprio\ttickets\tcreation time\n");
-  cprintf("---------------------------------------------------------\n");
+  cprintf("---------------------------------------------------------------------------------\n");
   acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
   {
@@ -490,7 +492,7 @@ sys_pstatus(void)
       }
     }
       cprintf("%s\t%s%d\t%s\t%s%d\t%d\t%d\t%d\n",
-        p->name, (strlen(p->name)<10)?"        ":"" , p->pid, state,
+        p->name, (strlen(p->name)<8)?"        ":"" , p->pid, state,
         (strlen(state)<8)?"        ":"",p->level, (p->level == PRIORITY)?p->priority:-1,
         (p->level==LOTTERY)?p->priority:-1, p->ctime
       );
@@ -499,7 +501,7 @@ sys_pstatus(void)
   return 1;
 }
 
-int fcfs_index = 1; //TODO: THIS IS WRONG! WE NEED TO KEEP CREATION TIME IN PCB
+// int fcfs_index = 1; //TODO: THIS IS WRONG! WE NEED TO KEEP CREATION TIME IN PCB
 
 void
 scheduler(void)
@@ -559,7 +561,7 @@ scheduler(void)
       
       else if (p->level == FCFS)
       {
-        if (p->priority <= min_entrant)
+        if (p->priority < min_entrant)
         {
           min_entrant = p->priority;
           p2 = p;
