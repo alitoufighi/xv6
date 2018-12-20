@@ -90,16 +90,3 @@ sys_uptime(void)
   return xticks;
 }
 
-int
-sys_rand(void){
-  static unsigned long next = 1;
-  int rand_max;
-
-  if (argint(0, &rand_max) < 0)
-    return -1;
-  
-  next = next * 1103515245 + 12345;
-  int rand = ((unsigned)(next/65536) % 32768);
-  int result = rand % rand_max+1;
-  return (int)result;
-}
