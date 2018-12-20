@@ -20,13 +20,36 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
-// generates a pseudo-random number using LCG between 0 and M (inclusive)
-// int rand(int M) {
-//   static unsigned long X = 1;
-//   unsigned long a = 1103515245, c = 12345;
-//   X = a * X + c; 
-//   return ((unsigned int)(X / 65536) % 32768) % M + 1;
-// }
+int
+rand_number(int rand_max){ // used in kernel
+  static unsigned long z1 = 12345, z2 = 12345, z3 = 12345, z4 = 12345;
+  unsigned long b;
+  b  = ((z1 << 6) ^ z1) >> 13 * ticks;
+  z1 = ((z1 & 4294967294U) << 18) ^ b;
+  b  = ((z2 << 2) ^ z2) >> 27; 
+  z2 = (((z2 & 4294967288U) << 2) ^ b) * ticks;
+  b  = ((z3 << 13) ^ z3) >> 21;
+  z3 = (((z3 & 4294967280U) << 7) ^ b) + ticks;
+  b  = ((z4 << 3) ^ z4) >> 12;
+  z4 = (((z4 & 4294967168U) << 13) ^ b) * ticks;
+
+  int result = (z1 ^ z2 ^ z3 ^ z4) % rand_max;
+
+  return result;
+}
+
+int
+sys_rand(void){
+  // static unsigned long z1 = 12345, z2 = 12345, z3 = 12345, z4 = 12345;
+  // unsigned long b;
+  int rand_max;
+
+  if (argint(0, &rand_max) < 0)
+    return -1;
+
+  return rand_number(rand_max);
+}
+
 
 void
 pinit(void)
@@ -340,7 +363,7 @@ int sys_set_priority(void)
   
   p->state = RUNNABLE;
   
-  // cprintf("pid: %d, set priority: %d \n", p->pid, p->priority);
+  cprintf("SYSLOG: Priority of process %d set to %d\n", p->pid, p->priority);
   sched();
 
   release(&ptable.lock);
@@ -365,7 +388,7 @@ int sys_set_lottery(void)
   p->priority = lottery;
   
   p->state = RUNNABLE;
-  
+  cprintf("SYSLOG: Lottery ticket of process %d set to %d\n", p->pid, lottery);
   sched();
 
   release(&ptable.lock);
@@ -373,14 +396,6 @@ int sys_set_lottery(void)
   return 1;
 }
 
-int
-rand_number(int rand_max){
-  static unsigned long next = 1;
-  next = next * 1103515245 + 12345;
-  int rand = ((unsigned)(next/65536) % 32768);
-  int result = rand % rand_max+1;
-  return (int)result;
-}
 
 int sys_change_level(void)
 {
@@ -402,21 +417,20 @@ int sys_change_level(void)
   {
     case PRIORITY:
     {
-      cprintf("Level of %d changed to priority\n", p->pid);
-      p->priority = 100;
+      p->priority = 100; // ?
+      cprintf("SYSLOG: Level of process %d changed to priority\n", p->pid);
       break;
     }
     case FCFS:
     {
-      cprintf("level chagned to fcfs : %d\n", fcfs_index + 1);
-      fcfs_index++;
-      p->priority = fcfs_index;
+      p->priority = ++fcfs_index;
+      cprintf("SYSLOG: Level of process %d changed to FCFS with index of %d\n", p->pid, fcfs_index);
       break;
     }
     case LOTTERY:
     {
-      cprintf("Level of %d changed to lottery\n", p->pid);
       p->priority = 1;
+      cprintf("SYSLOG: Level of process %d changed to lottery with %d ticket(s)\n", p->pid, 1);
       break;
     }
   }
@@ -479,28 +493,27 @@ scheduler(void)
       
       if (p->level == LOTTERY)
       {
-        if (random_lottery >= p->priority)
+        if (random_lottery > p->priority)
           random_lottery -= p->priority;
         else
         {
-          cprintf("pid number : %d selected \n", p->pid);
-          if (p1 != NULL)
+          if (p1 == NULL)
             p1 = p;
         }
       }
       
-      if (p->level == FCFS)
+      else if (p->level == FCFS)
       {
-        if (p->level <= min_entrant)
+        if (p->priority <= min_entrant)
         {
           min_entrant = p->priority;
           p2 = p;
         }
-      }         
+      }
 
-      if(p->level == PRIORITY)
+      else if(p->level == PRIORITY)
       {
-        if (p->priority >= max_prio)
+        if (p->priority > max_prio)
         {
           max_prio = p->priority;
           p3 = p;
