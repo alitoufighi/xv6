@@ -40,8 +40,6 @@ rand_number(int rand_max){ // used in kernel
 
 int
 sys_rand(void){
-  // static unsigned long z1 = 12345, z2 = 12345, z3 = 12345, z4 = 12345;
-  // unsigned long b;
   int rand_max;
 
   if (argint(0, &rand_max) < 0)
