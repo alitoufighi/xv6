@@ -21,7 +21,8 @@ extern void trapret(void);
 static void wakeup1(void *chan);
 
 int
-rand_number(int rand_max){ // used in kernel
+randint(int rand_max)
+{ // used in kernel
   static unsigned long z1 = 12345, z2 = 12345, z3 = 12345, z4 = 12345;
   unsigned long b;
   b  = ((z1 << 6) ^ z1) >> 13 * ticks;
@@ -39,13 +40,14 @@ rand_number(int rand_max){ // used in kernel
 }
 
 int
-sys_rand(void){
+sys_rand(void)
+{
   int rand_max;
 
   if (argint(0, &rand_max) < 0)
     return -1;
 
-  return rand_number(rand_max);
+  return randint(rand_max);
 }
 
 
@@ -532,7 +534,7 @@ scheduler(void)
     if(lottery_sum == 0)
       lottery_sum = 1;
 
-    int random_lottery = rand_number(lottery_sum);
+    int random_lottery = randint(lottery_sum);
     
     uint min_prio = 0xFFFFFF;
     uint min_entrant = 0xFFFFFF;
