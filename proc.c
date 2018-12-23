@@ -119,7 +119,9 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  p->ctime = ticks;
   static int index = 0;
+  p->index = index++;
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -146,8 +148,6 @@ found:
   // First of all, the new processes are in priority queue (level 3)
   p->level = PRIORITY;
   p->priority = 1;
-  p->ctime = ticks;
-  p->index = index++;
   return p;
 }
 
