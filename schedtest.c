@@ -58,7 +58,7 @@ int main()
 
 		if (pid > 0)
 		{
-			for (int i = 0; i < L1NCHILD; i++)
+			for (i = 0; i < L1NCHILD; i++)
 			{
 				pid = fork();
 			
@@ -88,7 +88,7 @@ int main()
 				pstatus();
  
 				printf(1, "Waiting for children\n");
-				for (int i = 0; i < (L1NCHILD + L2NCHILD + L3NCHILD); i++)
+				for (i = 0; i < (L1NCHILD + L2NCHILD + L3NCHILD); i++)
 					wait();
 				
 				printf(1, "User program finished\n");

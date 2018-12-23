@@ -40,7 +40,7 @@ int main()
 		// set_lottery(1);
 
 		printf(1, "Waiting for children\n");
-		for (int i = 0; i < NCHILD; i++)
+		for (i = 0; i < NCHILD; i++)
 			wait();
 		
 		printf(1, "User program finished\n");
