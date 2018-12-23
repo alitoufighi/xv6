@@ -25,10 +25,10 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
-int set_priority(uint);
+int set_priority(uint, uint);
 int rand(int);
-int change_level(uint);
-int set_lottery(uint);
+int change_level(uint, uint);
+int set_lottery(uint, uint);
 int pstatus(void);
 
 // ulib.c

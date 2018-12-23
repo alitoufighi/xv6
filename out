@@ -1,246 +1,245 @@
-init	        1	SLEEPING	3	1	-1	0
-sh	        2	SLEEPING	3	1	-1	4
-schedtest	3	RUNNING	        3	100	-1	361
-schedtest	4	ZOMBIE	        3	24	-1	361
-schedtest	5	ZOMBIE	        3	2	-1	362
-schedtest	6	ZOMBIE	        3	62	-1	362
-schedtest	7	ZOMBIE	        3	80	-1	362
-schedtest	8	ZOMBIE	        3	20	-1	365
-schedtest	9	ZOMBIE	        3	2	-1	366
-schedtest	10	ZOMBIE	        3	38	-1	368
-schedtest	11	ZOMBIE	        3	20	-1	368
-schedtest	12	ZOMBIE	        3	41	-1	368
-schedtest	13	ZOMBIE	        3	68	-1	371
-schedtest	14	ZOMBIE	        3	29	-1	371
-schedtest	15	ZOMBIE	        3	40	-1	374
-schedtest	16	ZOMBIE	        3	35	-1	374
-schedtest	17	ZOMBIE	        3	3	-1	374
-schedtest	18	ZOMBIE	        3	55	-1	374
-schedtest	19	ZOMBIE	        3	11	-1	378
-schedtest	20	ZOMBIE	        3	32	-1	380
-schedtest	21	ZOMBIE	        3	56	-1	380
-schedtest	22	ZOMBIE	        3	41	-1	380
-schedtest	23	ZOMBIE	        3	13	-1	380
-schedtest	24	ZOMBIE	        3	54	-1	384
-schedtest	25	ZOMBIE	        3	44	-1	385
-schedtest	26	ZOMBIE	        3	27	-1	387
-schedtest	27	ZOMBIE	        3	33	-1	387
-schedtest	28	ZOMBIE	        3	74	-1	387
-schedtest	29	ZOMBIE	        3	43	-1	387
-schedtest	30	ZOMBIE	        3	52	-1	391
-schedtest	31	ZOMBIE	        3	13	-1	391
-schedtest	32	ZOMBIE	        3	14	-1	394
-schedtest	33	ZOMBIE	        3	48	-1	394
-schedtest	34	ZOMBIE	        3	77	-1	394
-schedtest	35	ZOMBIE	        3	15	-1	394
-schedtest	36	ZOMBIE	        3	9	-1	398
-schedtest	37	ZOMBIE	        3	21	-1	398
-schedtest	38	ZOMBIE	        3	64	-1	400
-schedtest	39	ZOMBIE	        3	33	-1	402
-schedtest	40	ZOMBIE	        3	73	-1	402
-schedtest	41	ZOMBIE	        3	30	-1	402
-schedtest	42	ZOMBIE	        3	4	-1	402
-schedtest	43	ZOMBIE	        3	39	-1	406
-schedtest	44	ZOMBIE	        3	7	-1	408
-schedtest	45	ZOMBIE	        3	50	-1	408
-schedtest	46	ZOMBIE	        3	67	-1	408
-schedtest	47	ZOMBIE	        3	73	-1	408
-schedtest	48	ZOMBIE	        3	19	-1	412
-schedtest	49	ZOMBIE	        3	44	-1	414
-schedtest	50	ZOMBIE	        3	4	-1	414
-schedtest	51	ZOMBIE	        3	5	-1	414
-schedtest	52	ZOMBIE	        3	33	-1	417
-schedtest	53	ZOMBIE	        3	27	-1	417
-schedtest	54	ZOMBIE	        3	25	-1	419
-schedtest	55	ZOMBIE	        3	78	-1	420
-schedtest	56	ZOMBIE	        3	73	-1	422
-schedtest	57	ZOMBIE	        3	77	-1	422
-schedtest	58	ZOMBIE	        3	37	-1	422
-schedtest	59	ZOMBIE	        3	71	-1	422
-schedtest	60	ZOMBIE	        3	13	-1	426
-schedtest	61	ZOMBIE	        3	41	-1	426
-schedtest	62	ZOMBIE	        3	48	-1	428
-schedtest	63	ZOMBIE	        3	59	-1	430
-schedtest	64	ZOMBIE	        3	80	-1	430
-schedtest	65	ZOMBIE	        3	60	-1	430
-schedtest	66	ZOMBIE	        3	10	-1	430
-schedtest	67	ZOMBIE	        3	66	-1	436
-schedtest	68	ZOMBIE	        3	24	-1	436
-schedtest	69	ZOMBIE	        3	58	-1	436
-schedtest	70	ZOMBIE	        3	43	-1	439
-schedtest	71	ZOMBIE	        3	48	-1	439
-schedtest	72	ZOMBIE	        3	30	-1	441
-schedtest	73	ZOMBIE	        3	47	-1	443
-schedtest	74	ZOMBIE	        3	18	-1	443
-schedtest	75	ZOMBIE	        3	19	-1	443
-schedtest	76	ZOMBIE	        3	63	-1	447
-schedtest	77	ZOMBIE	        3	53	-1	447
-schedtest	78	ZOMBIE	        3	64	-1	449
-schedtest	79	ZOMBIE	        3	11	-1	449
-schedtest	80	ZOMBIE	        3	33	-1	449
-schedtest	81	ZOMBIE	        3	79	-1	449
-schedtest	82	ZOMBIE	        3	31	-1	455
-schedtest	83	ZOMBIE	        3	39	-1	455
-schedtest	84	ZOMBIE	        2	-1	-1	455
-schedtest	85	ZOMBIE	        2	-1	-1	458
-schedtest	86	ZOMBIE	        2	-1	-1	458
-schedtest	87	ZOMBIE	        2	-1	-1	461
-schedtest	88	ZOMBIE	        2	-1	-1	461
-schedtest	89	ZOMBIE	        2	-1	-1	461
-schedtest	90	ZOMBIE	        2	-1	-1	464
-schedtest	91	ZOMBIE	        2	-1	-1	466
-schedtest	92	ZOMBIE	        2	-1	-1	466
-schedtest	93	ZOMBIE	        2	-1	-1	466
-schedtest	94	ZOMBIE	        2	-1	-1	466
-schedtest	95	ZOMBIE	        2	-1	-1	470
-schedtest	96	ZOMBIE	        2	-1	-1	472
-schedtest	97	ZOMBIE	        2	-1	-1	472
-schedtest	98	ZOMBIE	        2	-1	-1	472
-schedtest	99	ZOMBIE	        2	-1	-1	472
-schedtest	100	ZOMBIE	        2	-1	-1	477
-schedtest	101	ZOMBIE	        2	-1	-1	477
-schedtest	102	ZOMBIE	        2	-1	-1	477
-schedtest	103	ZOMBIE	        2	-1	-1	477
-schedtest	104	ZOMBIE	        2	-1	-1	481
-schedtest	105	ZOMBIE	        2	-1	-1	483
-schedtest	106	ZOMBIE	        2	-1	-1	483
-schedtest	107	ZOMBIE	        2	-1	-1	483
-schedtest	108	ZOMBIE	        2	-1	-1	487
-schedtest	109	ZOMBIE	        2	-1	-1	487
-schedtest	110	ZOMBIE	        2	-1	-1	487
-schedtest	111	ZOMBIE	        2	-1	-1	487
-schedtest	112	ZOMBIE	        2	-1	-1	492
-schedtest	113	ZOMBIE	        2	-1	-1	492
-schedtest	114	ZOMBIE	        2	-1	-1	492
-schedtest	115	ZOMBIE	        2	-1	-1	492
-schedtest	116	ZOMBIE	        2	-1	-1	497
-schedtest	117	ZOMBIE	        2	-1	-1	497
-schedtest	118	ZOMBIE	        2	-1	-1	497
-schedtest	119	ZOMBIE	        2	-1	-1	497
-schedtest	120	ZOMBIE	        2	-1	-1	502
-schedtest	121	ZOMBIE	        2	-1	-1	504
-schedtest	122	ZOMBIE	        2	-1	-1	504
-schedtest	123	ZOMBIE	        2	-1	-1	504
-schedtest	124	ZOMBIE	        2	-1	-1	504
-schedtest	125	ZOMBIE	        2	-1	-1	509
-schedtest	126	ZOMBIE	        2	-1	-1	509
-schedtest	127	ZOMBIE	        2	-1	-1	509
-schedtest	128	ZOMBIE	        2	-1	-1	509
-schedtest	129	ZOMBIE	        2	-1	-1	514
-schedtest	130	ZOMBIE	        2	-1	-1	514
-schedtest	131	ZOMBIE	        2	-1	-1	514
-schedtest	132	ZOMBIE	        2	-1	-1	514
-schedtest	133	ZOMBIE	        2	-1	-1	518
-schedtest	134	ZOMBIE	        2	-1	-1	520
-schedtest	135	ZOMBIE	        2	-1	-1	520
-schedtest	136	ZOMBIE	        2	-1	-1	520
-schedtest	137	ZOMBIE	        2	-1	-1	524
-schedtest	138	ZOMBIE	        2	-1	-1	524
-schedtest	139	ZOMBIE	        2	-1	-1	524
-schedtest	140	ZOMBIE	        2	-1	-1	524
-schedtest	141	ZOMBIE	        2	-1	-1	529
-schedtest	142	ZOMBIE	        2	-1	-1	529
-schedtest	143	ZOMBIE	        2	-1	-1	529
-schedtest	144	ZOMBIE	        2	-1	-1	529
-schedtest	145	ZOMBIE	        2	-1	-1	534
-schedtest	146	ZOMBIE	        2	-1	-1	534
-schedtest	147	ZOMBIE	        2	-1	-1	534
-schedtest	148	ZOMBIE	        2	-1	-1	534
-schedtest	149	ZOMBIE	        2	-1	-1	539
-schedtest	150	ZOMBIE	        2	-1	-1	539
-schedtest	151	ZOMBIE	        2	-1	-1	539
-schedtest	152	ZOMBIE	        2	-1	-1	539
-schedtest	153	ZOMBIE	        2	-1	-1	544
-schedtest	154	ZOMBIE	        2	-1	-1	544
-schedtest	155	ZOMBIE	        2	-1	-1	544
-schedtest	156	ZOMBIE	        2	-1	-1	544
-schedtest	157	ZOMBIE	        2	-1	-1	548
-schedtest	158	ZOMBIE	        2	-1	-1	550
-schedtest	159	ZOMBIE	        2	-1	-1	550
-schedtest	160	ZOMBIE	        2	-1	-1	550
-schedtest	161	ZOMBIE	        2	-1	-1	550
-schedtest	162	ZOMBIE	        2	-1	-1	555
-schedtest	163	ZOMBIE	        2	-1	-1	555
-schedtest	164	ZOMBIE	        1	-1	74	555
-schedtest	165	ZOMBIE	        1	-1	48	555
-schedtest	166	ZOMBIE	        1	-1	27	559
-schedtest	167	ZOMBIE	        1	-1	48	560
-schedtest	168	ZOMBIE	        1	-1	23	560
-schedtest	169	ZOMBIE	        1	-1	64	562
-schedtest	170	ZOMBIE	        1	-1	50	562
-schedtest	171	ZOMBIE	        1	-1	24	564
-schedtest	172	ZOMBIE	        1	-1	39	564
-schedtest	173	ZOMBIE	        1	-1	36	564
-schedtest	174	ZOMBIE	        1	-1	27	566
-schedtest	175	ZOMBIE	        1	-1	52	567
-schedtest	176	ZOMBIE	        1	-1	53	568
-schedtest	177	ZOMBIE	        1	-1	80	568
-schedtest	178	ZOMBIE	        1	-1	56	570
-schedtest	179	ZOMBIE	        1	-1	61	570
-schedtest	180	ZOMBIE	        1	-1	64	570
-schedtest	181	ZOMBIE	        1	-1	36	572
-schedtest	182	ZOMBIE	        1	-1	4	573
-schedtest	183	ZOMBIE	        1	-1	16	574
-schedtest	184	ZOMBIE	        1	-1	71	574
-schedtest	185	ZOMBIE	        1	-1	49	576
-schedtest	186	ZOMBIE	        1	-1	46	576
-schedtest	187	ZOMBIE	        1	-1	80	576
-schedtest	188	ZOMBIE	        1	-1	69	578
-schedtest	189	ZOMBIE	        1	-1	28	579
-schedtest	190	ZOMBIE	        1	-1	27	580
-schedtest	191	ZOMBIE	        1	-1	77	581
-schedtest	192	ZOMBIE	        1	-1	38	581
-schedtest	193	ZOMBIE	        1	-1	32	583
-schedtest	194	ZOMBIE	        1	-1	44	583
-schedtest	195	ZOMBIE	        1	-1	10	583
-schedtest	196	ZOMBIE	        1	-1	78	586
-schedtest	197	ZOMBIE	        1	-1	64	586
-schedtest	198	ZOMBIE	        1	-1	32	586
-schedtest	199	ZOMBIE	        1	-1	47	586
-schedtest	200	ZOMBIE	        1	-1	28	589
-schedtest	201	ZOMBIE	        1	-1	53	589
-schedtest	202	ZOMBIE	        1	-1	78	591
-schedtest	203	ZOMBIE	        1	-1	5	591
-schedtest	204	ZOMBIE	        1	-1	50	591
-schedtest	205	ZOMBIE	        1	-1	38	593
-schedtest	206	ZOMBIE	        1	-1	25	594
-schedtest	207	ZOMBIE	        1	-1	75	595
-schedtest	208	ZOMBIE	        1	-1	15	596
-schedtest	209	ZOMBIE	        1	-1	67	596
-schedtest	210	ZOMBIE	        1	-1	54	598
-schedtest	211	ZOMBIE	        1	-1	76	598
-schedtest	212	ZOMBIE	        1	-1	25	598
-schedtest	213	ZOMBIE	        1	-1	22	600
-schedtest	214	ZOMBIE	        1	-1	40	601
-schedtest	215	ZOMBIE	        1	-1	2	602
-schedtest	216	ZOMBIE	        1	-1	20	602
-schedtest	217	ZOMBIE	        1	-1	35	604
-schedtest	218	ZOMBIE	        1	-1	16	604
-schedtest	219	ZOMBIE	        1	-1	51	606
-schedtest	220	ZOMBIE	        1	-1	9	606
-schedtest	221	ZOMBIE	        1	-1	53	606
-schedtest	222	ZOMBIE	        1	-1	23	610
-schedtest	223	ZOMBIE	        1	-1	17	610
-schedtest	224	ZOMBIE	        1	-1	76	610
-schedtest	225	ZOMBIE	        1	-1	51	610
-schedtest	226	ZOMBIE	        1	-1	22	613
-schedtest	227	ZOMBIE	        1	-1	30	613
-schedtest	228	ZOMBIE	        1	-1	58	615
-schedtest	229	ZOMBIE	        1	-1	21	615
-schedtest	230	ZOMBIE	        1	-1	53	615
-schedtest	231	ZOMBIE	        1	-1	6	617
-schedtest	232	ZOMBIE	        1	-1	30	618
-schedtest	233	ZOMBIE	        1	-1	15	619
-schedtest	234	ZOMBIE	        1	-1	54	620
-schedtest	235	ZOMBIE	        1	-1	51	621
-schedtest	236	ZOMBIE	        1	-1	39	621
-schedtest	237	ZOMBIE	        1	-1	36	623
-schedtest	238	ZOMBIE	        1	-1	69	623
-schedtest	239	ZOMBIE	        1	-1	74	623
-schedtest	240	ZOMBIE	        1	-1	50	626
-schedtest	241	ZOMBIE	        1	-1	11	626
-schedtest	242	ZOMBIE	        1	-1	46	626
-schedtest	243	ZOMBIE	        1	-1	9	626
-Waiting for children
-User program finished
-$ 
+name		index	pid	state		queue	prio	tickets	creation time
+-------------------------------------------------------------------------------------
+init	        0	1	SLEEPING	3	1	-1	0
+sh	        1	2	SLEEPING	3	1	-1	4
+schedtest	2	3	RUNNING	        3	100	-1	368
+schedtest	3	4	ZOMBIE	        3	29	-1	369
+schedtest	4	5	ZOMBIE	        3	16	-1	370
+schedtest	5	6	ZOMBIE	        3	3	-1	370
+schedtest	6	7	ZOMBIE	        3	22	-1	370
+schedtest	7	8	ZOMBIE	        3	26	-1	370
+schedtest	8	9	ZOMBIE	        3	73	-1	374
+schedtest	9	10	ZOMBIE	        3	71	-1	376
+schedtest	10	11	ZOMBIE	        3	35	-1	376
+schedtest	11	12	ZOMBIE	        3	33	-1	376
+schedtest	12	13	ZOMBIE	        3	64	-1	379
+schedtest	13	14	ZOMBIE	        3	40	-1	381
+schedtest	14	15	ZOMBIE	        3	34	-1	381
+schedtest	15	16	ZOMBIE	        3	16	-1	384
+schedtest	16	17	ZOMBIE	        3	14	-1	384
+schedtest	17	18	ZOMBIE	        3	34	-1	384
+schedtest	18	19	ZOMBIE	        3	4	-1	388
+schedtest	19	20	ZOMBIE	        3	66	-1	388
+schedtest	20	21	ZOMBIE	        3	34	-1	388
+schedtest	21	22	ZOMBIE	        3	7	-1	388
+schedtest	22	23	ZOMBIE	        3	31	-1	392
+schedtest	23	24	ZOMBIE	        3	71	-1	394
+schedtest	24	25	ZOMBIE	        3	34	-1	394
+schedtest	25	26	ZOMBIE	        3	63	-1	394
+schedtest	26	27	ZOMBIE	        3	67	-1	394
+schedtest	27	28	ZOMBIE	        3	42	-1	398
+schedtest	28	29	ZOMBIE	        3	63	-1	400
+schedtest	29	30	ZOMBIE	        3	29	-1	400
+schedtest	30	31	ZOMBIE	        3	65	-1	400
+schedtest	31	32	ZOMBIE	        3	13	-1	400
+schedtest	32	33	ZOMBIE	        3	73	-1	404
+schedtest	33	34	ZOMBIE	        3	12	-1	404
+schedtest	34	35	ZOMBIE	        3	37	-1	406
+schedtest	35	36	ZOMBIE	        3	40	-1	408
+schedtest	36	37	ZOMBIE	        3	49	-1	408
+schedtest	37	38	ZOMBIE	        3	78	-1	408
+schedtest	38	39	ZOMBIE	        3	17	-1	411
+schedtest	39	40	ZOMBIE	        3	60	-1	411
+schedtest	40	41	ZOMBIE	        3	81	-1	413
+schedtest	41	42	ZOMBIE	        3	43	-1	415
+schedtest	42	43	ZOMBIE	        3	71	-1	415
+schedtest	43	44	ZOMBIE	        3	50	-1	415
+schedtest	44	45	ZOMBIE	        3	78	-1	418
+schedtest	45	46	ZOMBIE	        3	59	-1	418
+schedtest	46	47	ZOMBIE	        3	79	-1	420
+schedtest	47	48	ZOMBIE	        3	14	-1	422
+schedtest	48	49	ZOMBIE	        3	66	-1	422
+schedtest	49	50	ZOMBIE	        3	68	-1	422
+schedtest	50	51	ZOMBIE	        3	24	-1	425
+schedtest	51	52	ZOMBIE	        3	15	-1	425
+schedtest	52	53	ZOMBIE	        3	57	-1	427
+schedtest	53	54	ZOMBIE	        3	77	-1	429
+schedtest	54	55	ZOMBIE	        3	76	-1	429
+schedtest	55	56	ZOMBIE	        3	74	-1	429
+schedtest	56	57	ZOMBIE	        3	74	-1	429
+schedtest	57	58	ZOMBIE	        3	26	-1	433
+schedtest	58	59	ZOMBIE	        3	38	-1	435
+schedtest	59	60	ZOMBIE	        3	25	-1	435
+schedtest	60	61	ZOMBIE	        3	29	-1	435
+schedtest	61	62	ZOMBIE	        3	59	-1	435
+schedtest	62	63	ZOMBIE	        3	70	-1	439
+schedtest	63	64	ZOMBIE	        3	6	-1	440
+schedtest	64	65	ZOMBIE	        3	81	-1	442
+schedtest	65	66	ZOMBIE	        3	16	-1	442
+schedtest	66	67	ZOMBIE	        3	7	-1	442
+schedtest	67	68	ZOMBIE	        3	15	-1	442
+schedtest	68	69	ZOMBIE	        3	78	-1	446
+schedtest	69	70	ZOMBIE	        3	52	-1	446
+schedtest	70	71	ZOMBIE	        3	4	-1	449
+schedtest	71	72	ZOMBIE	        3	37	-1	449
+schedtest	72	73	ZOMBIE	        3	54	-1	449
+schedtest	73	74	ZOMBIE	        3	79	-1	449
+schedtest	74	75	ZOMBIE	        3	52	-1	455
+schedtest	75	76	ZOMBIE	        3	53	-1	455
+schedtest	76	77	ZOMBIE	        3	17	-1	455
+schedtest	77	78	ZOMBIE	        3	30	-1	458
+schedtest	78	79	ZOMBIE	        3	43	-1	458
+schedtest	79	80	ZOMBIE	        3	59	-1	460
+schedtest	80	81	ZOMBIE	        3	69	-1	462
+schedtest	81	82	ZOMBIE	        3	78	-1	462
+schedtest	82	83	ZOMBIE	        3	15	-1	462
+schedtest	83	84	ZOMBIE	        2	-1	-1	462
+schedtest	84	85	ZOMBIE	        2	-1	-1	466
+schedtest	85	86	ZOMBIE	        2	-1	-1	468
+schedtest	86	87	ZOMBIE	        2	-1	-1	468
+schedtest	87	88	ZOMBIE	        2	-1	-1	468
+schedtest	88	89	ZOMBIE	        2	-1	-1	472
+schedtest	89	90	ZOMBIE	        2	-1	-1	472
+schedtest	90	91	ZOMBIE	        2	-1	-1	472
+schedtest	91	92	ZOMBIE	        2	-1	-1	472
+schedtest	92	93	ZOMBIE	        2	-1	-1	477
+schedtest	93	94	ZOMBIE	        2	-1	-1	477
+schedtest	94	95	ZOMBIE	        2	-1	-1	477
+schedtest	95	96	ZOMBIE	        2	-1	-1	481
+schedtest	96	97	ZOMBIE	        2	-1	-1	481
+schedtest	97	98	ZOMBIE	        2	-1	-1	481
+schedtest	98	99	ZOMBIE	        2	-1	-1	481
+schedtest	99	100	ZOMBIE	        2	-1	-1	486
+schedtest	100	101	ZOMBIE	        2	-1	-1	486
+schedtest	101	102	ZOMBIE	        2	-1	-1	486
+schedtest	102	103	ZOMBIE	        2	-1	-1	486
+schedtest	103	104	ZOMBIE	        2	-1	-1	490
+schedtest	104	105	ZOMBIE	        2	-1	-1	492
+schedtest	105	106	ZOMBIE	        2	-1	-1	492
+schedtest	106	107	ZOMBIE	        2	-1	-1	492
+schedtest	107	108	ZOMBIE	        2	-1	-1	495
+schedtest	108	109	ZOMBIE	        2	-1	-1	497
+schedtest	109	110	ZOMBIE	        2	-1	-1	497
+schedtest	110	111	ZOMBIE	        2	-1	-1	497
+schedtest	111	112	ZOMBIE	        2	-1	-1	497
+schedtest	112	113	ZOMBIE	        2	-1	-1	502
+schedtest	113	114	ZOMBIE	        2	-1	-1	502
+schedtest	114	115	ZOMBIE	        2	-1	-1	502
+schedtest	115	116	ZOMBIE	        2	-1	-1	502
+schedtest	116	117	ZOMBIE	        2	-1	-1	507
+schedtest	117	118	ZOMBIE	        2	-1	-1	507
+schedtest	118	119	ZOMBIE	        2	-1	-1	510
+schedtest	119	120	ZOMBIE	        2	-1	-1	510
+schedtest	120	121	ZOMBIE	        2	-1	-1	510
+schedtest	121	122	ZOMBIE	        2	-1	-1	514
+schedtest	122	123	ZOMBIE	        2	-1	-1	514
+schedtest	123	124	ZOMBIE	        2	-1	-1	517
+schedtest	124	125	ZOMBIE	        2	-1	-1	517
+schedtest	125	126	ZOMBIE	        2	-1	-1	517
+schedtest	126	127	ZOMBIE	        2	-1	-1	517
+schedtest	127	128	ZOMBIE	        2	-1	-1	522
+schedtest	128	129	ZOMBIE	        2	-1	-1	522
+schedtest	129	130	ZOMBIE	        2	-1	-1	524
+schedtest	130	131	ZOMBIE	        2	-1	-1	526
+schedtest	131	132	ZOMBIE	        2	-1	-1	526
+schedtest	132	133	ZOMBIE	        2	-1	-1	526
+schedtest	133	134	ZOMBIE	        2	-1	-1	529
+schedtest	134	135	ZOMBIE	        2	-1	-1	531
+schedtest	135	136	ZOMBIE	        2	-1	-1	531
+schedtest	136	137	ZOMBIE	        2	-1	-1	531
+schedtest	137	138	ZOMBIE	        2	-1	-1	531
+schedtest	138	139	ZOMBIE	        2	-1	-1	535
+schedtest	139	140	ZOMBIE	        2	-1	-1	537
+schedtest	140	141	ZOMBIE	        2	-1	-1	537
+schedtest	141	142	ZOMBIE	        2	-1	-1	537
+schedtest	142	143	ZOMBIE	        2	-1	-1	537
+schedtest	143	144	ZOMBIE	        2	-1	-1	542
+schedtest	144	145	ZOMBIE	        2	-1	-1	542
+schedtest	145	146	ZOMBIE	        2	-1	-1	542
+schedtest	146	147	ZOMBIE	        2	-1	-1	546
+schedtest	147	148	ZOMBIE	        2	-1	-1	546
+schedtest	148	149	ZOMBIE	        2	-1	-1	546
+schedtest	149	150	ZOMBIE	        2	-1	-1	546
+schedtest	150	151	ZOMBIE	        2	-1	-1	552
+schedtest	151	152	ZOMBIE	        2	-1	-1	552
+schedtest	152	153	ZOMBIE	        2	-1	-1	556
+schedtest	153	154	ZOMBIE	        2	-1	-1	558
+schedtest	154	155	ZOMBIE	        2	-1	-1	558
+schedtest	155	156	ZOMBIE	        2	-1	-1	558
+schedtest	156	157	ZOMBIE	        2	-1	-1	562
+schedtest	157	158	ZOMBIE	        2	-1	-1	562
+schedtest	158	159	ZOMBIE	        2	-1	-1	564
+schedtest	159	160	ZOMBIE	        2	-1	-1	566
+schedtest	160	161	ZOMBIE	        2	-1	-1	566
+schedtest	161	162	ZOMBIE	        2	-1	-1	566
+schedtest	162	163	ZOMBIE	        2	-1	-1	570
+schedtest	163	164	ZOMBIE	        1	-1	5	570
+schedtest	164	165	ZOMBIE	        1	-1	73	570
+schedtest	165	166	ZOMBIE	        1	-1	43	573
+schedtest	166	167	ZOMBIE	        1	-1	67	574
+schedtest	167	168	ZOMBIE	        1	-1	8	574
+schedtest	168	169	ZOMBIE	        1	-1	14	576
+schedtest	169	170	ZOMBIE	        1	-1	56	576
+schedtest	170	171	ZOMBIE	        1	-1	5	578
+schedtest	171	172	ZOMBIE	        1	-1	7	578
+schedtest	172	173	ZOMBIE	        1	-1	8	578
+schedtest	173	174	ZOMBIE	        1	-1	15	580
+schedtest	174	175	ZOMBIE	        1	-1	48	581
+schedtest	175	176	ZOMBIE	        1	-1	70	582
+schedtest	176	177	ZOMBIE	        1	-1	37	583
+schedtest	177	178	ZOMBIE	        1	-1	5	583
+schedtest	178	179	ZOMBIE	        1	-1	32	585
+schedtest	179	180	ZOMBIE	        1	-1	27	585
+schedtest	180	181	ZOMBIE	        1	-1	70	587
+schedtest	181	182	ZOMBIE	        1	-1	80	587
+schedtest	182	183	ZOMBIE	        1	-1	73	589
+schedtest	183	184	ZOMBIE	        1	-1	5	589
+schedtest	184	185	ZOMBIE	        1	-1	54	589
+schedtest	185	186	ZOMBIE	        1	-1	33	592
+schedtest	186	187	ZOMBIE	        1	-1	32	592
+schedtest	187	188	ZOMBIE	        1	-1	28	592
+schedtest	188	189	ZOMBIE	        1	-1	30	594
+schedtest	189	190	ZOMBIE	        1	-1	18	595
+schedtest	190	191	ZOMBIE	        1	-1	66	595
+schedtest	191	192	ZOMBIE	        1	-1	4	597
+schedtest	192	193	ZOMBIE	        1	-1	56	597
+schedtest	193	194	ZOMBIE	        1	-1	8	600
+schedtest	194	195	ZOMBIE	        1	-1	47	600
+schedtest	195	196	ZOMBIE	        1	-1	71	602
+schedtest	196	197	ZOMBIE	        1	-1	41	602
+schedtest	197	198	ZOMBIE	        1	-1	9	604
+schedtest	198	199	ZOMBIE	        1	-1	7	604
+schedtest	199	200	ZOMBIE	        1	-1	1	606
+schedtest	200	201	ZOMBIE	        1	-1	56	607
+schedtest	201	202	ZOMBIE	        1	-1	9	608
+schedtest	202	203	ZOMBIE	        1	-1	47	608
+schedtest	203	204	ZOMBIE	        1	-1	65	610
+schedtest	204	205	ZOMBIE	        1	-1	80	610
+schedtest	205	206	ZOMBIE	        1	-1	23	612
+schedtest	206	207	ZOMBIE	        1	-1	72	612
+schedtest	207	208	ZOMBIE	        1	-1	44	612
+schedtest	208	209	ZOMBIE	        1	-1	61	615
+schedtest	209	210	ZOMBIE	        1	-1	43	615
+schedtest	210	211	ZOMBIE	        1	-1	23	615
+schedtest	211	212	ZOMBIE	        1	-1	56	615
+schedtest	212	213	ZOMBIE	        1	-1	59	618
+schedtest	213	214	ZOMBIE	        1	-1	74	618
+schedtest	214	215	ZOMBIE	        1	-1	26	620
+schedtest	215	216	ZOMBIE	        1	-1	13	620
+schedtest	216	217	ZOMBIE	        1	-1	42	620
+schedtest	217	218	ZOMBIE	        1	-1	11	623
+schedtest	218	219	ZOMBIE	        1	-1	46	623
+schedtest	219	220	ZOMBIE	        1	-1	58	623
+schedtest	220	221	ZOMBIE	        1	-1	73	626
+schedtest	221	222	ZOMBIE	        1	-1	11	626
+schedtest	222	223	ZOMBIE	        1	-1	15	626
+schedtest	223	224	ZOMBIE	        1	-1	70	626
+schedtest	224	225	ZOMBIE	        1	-1	5	629
+schedtest	225	226	ZOMBIE	        1	-1	1	629
+schedtest	226	227	ZOMBIE	        1	-1	7	631
+schedtest	227	228	ZOMBIE	        1	-1	5	631
+schedtest	228	229	ZOMBIE	        1	-1	62	633
+schedtest	229	230	ZOMBIE	        1	-1	20	633
+schedtest	230	231	ZOMBIE	        1	-1	31	633
+schedtest	231	232	ZOMBIE	        1	-1	67	635
+schedtest	232	233	ZOMBIE	        1	-1	5	636
+schedtest	233	234	ZOMBIE	        1	-1	41	637
+schedtest	234	235	ZOMBIE	        1	-1	80	638
+schedtest	235	236	ZOMBIE	        1	-1	30	639
+schedtest	236	237	ZOMBIE	        1	-1	20	639
+schedtest	237	238	ZOMBIE	        1	-1	49	641
+schedtest	238	239	ZOMBIE	        1	-1	3	641
+schedtest	239	240	ZOMBIE	        1	-1	15	643
+schedtest	240	241	ZOMBIE	        1	-1	21	643
+schedtest	241	242	ZOMBIE	        1	-1	25	645
+schedtest	242	243	ZOMBIE	        1	-1	74	645

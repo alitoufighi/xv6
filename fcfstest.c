@@ -8,7 +8,7 @@ int main()
 	int i, j;
 	pid = getpid();
 
-	change_level(2);
+	change_level(getpid(), 2);
 
 	for (i = 0; i < NCHILD; i++)
 		if (pid > 0)
@@ -23,7 +23,7 @@ int main()
 	{
 		for (i = 0; i < 10000; i++)
 			for (j = 0; j < 10000; j++);
-		change_level(2);
+		change_level(getpid(), 2);
 		for (i = 0; i < 10000; i++)
 			for (j = 0; j < 10000; j++);
 		printf(1, "Number is %d\n", getpid());

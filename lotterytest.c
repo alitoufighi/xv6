@@ -10,7 +10,7 @@ int main()
 
 	// printf(1, "%d current\n", pid);
 	// change_level(1);
-	set_priority(2);
+	set_priority(getpid(), 2);
 
 	for (i = 0; i < NCHILD; i++)
 	{
@@ -24,8 +24,8 @@ int main()
 		else if (pid == 0)
 		{
 			int random = rand(NCHILD) + 1; // +1 to make it a natural number
-			change_level(1);
-			set_lottery(random);
+			change_level(getpid(), 1);
+			set_lottery(getpid(), random);
 			printf(1, "Lottery ticket %d set for process %d\n", random, getpid());
 			break;
 		}

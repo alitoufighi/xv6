@@ -350,26 +350,44 @@ wait(void)
 
 int sys_set_priority(void)
 {
-  int priority;
-  if (argint(0, &priority) < 0)
+  int priority, pid;
+  if (argint(0, &pid) < 0)
+    return -1;
+
+  if (argint(1, &priority) < 0)
     return -1;
   
   if (priority <= 0)
     return -1;
   
   acquire(&ptable.lock);
-  struct proc *p = myproc();
-  if (p->level != PRIORITY)
+  struct proc *p, *proc = NULL;
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+      if (p->pid == pid)
+      {
+        proc = p;
+        break;
+      }
+  }
+
+  if (proc == NULL)
   {
     release(&ptable.lock);
     return -1;
   }
-  p->priority = priority;
+
+  if (proc->level != PRIORITY)
+  {
+    release(&ptable.lock);
+    return -1;
+
+  }
   
-  p->state = RUNNABLE;
+  proc->priority = priority;
   
-  cprintf("SYSLOG: Priority of process %d set to %d\n", p->pid, p->priority);
-  sched();
+  proc->state = RUNNABLE;
+  cprintf("SYSLOG: Priority of process %d set to %d\n", proc->pid, priority);
 
   release(&ptable.lock);
 
@@ -378,27 +396,41 @@ int sys_set_priority(void)
 
 int sys_set_lottery(void)
 {
-  int lottery;
-  if (argint(0, &lottery) < 0)
+  int lottery, pid;
+  if (argint(0, &pid) < 0)
+    return -1;
+
+  if (argint(1, &lottery) < 0)
     return -1;
   
   if (lottery <= 0)
     return -1;
   
   acquire(&ptable.lock);
-  struct proc *p = myproc();
-  if (p->level != LOTTERY)
+  struct proc *p, *proc = NULL;
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+      if (p->pid == pid)
+        proc = p;
+  }
+
+  if (proc == NULL)
+  {
+    release(&ptable.lock);
+    return -1;
+  }
+
+  if (proc->level != LOTTERY)
   {
     release(&ptable.lock);
     return -1;
 
   }
   
-  p->priority = lottery;
+  proc->priority = lottery;
   
-  p->state = RUNNABLE;
-  cprintf("SYSLOG: Lottery ticket of process %d set to %d\n", p->pid, lottery);
-  sched();
+  proc->state = RUNNABLE;
+  cprintf("SYSLOG: Lottery ticket of process %d set to %d\n", proc->pid, lottery);
 
   release(&ptable.lock);
 
@@ -409,45 +441,56 @@ int sys_set_lottery(void)
 int sys_change_level(void)
 {
   // static int fcfs_index = 1;
-  int level;
+  int level, pid;
+  if (argint(0, &pid) < 0)
+    return -1;
 
-  if (argint(0, &level) < 0)
+  if (argint(1, &level) < 0)
     return -1;
   
-  if (level <= 0 || level >= 3)
+  if (level <= 0 || level > 3)
     return -1;
   
   acquire(&ptable.lock);
-  struct proc *p = myproc();
+  struct proc *p, *proc = NULL;
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+      if (p->pid == pid)
+        proc = p;
+  }
+
+  if (proc == NULL)
+  {
+    release(&ptable.lock);
+    return -1;
+  }
   
-  p->level = level;
-  
+  proc->level = level;
+  cprintf("level : %d\n", level);
   switch (level)
   {
     case PRIORITY:
     {
-      p->priority = 100; // ?
-      cprintf("SYSLOG: Level of process %d changed to priority with priority of %d\n", p->pid, p->priority);
+      proc->priority = 100; // ?
+      cprintf("SYSLOG: Level of process %d changed to priority with priority of %d\n", proc->pid, proc->priority);
       break;
     }
     case FCFS:
     {
       // p->priority = ++fcfs_index;
-      p->priority = p->ctime;
-      cprintf("SYSLOG: Level of process %d changed to FCFS with index of %d\n", p->pid, p->priority);
+      proc->priority = p->ctime;
+      cprintf("SYSLOG: Level of process %d changed to FCFS with index of %d\n", proc->pid, proc->priority);
       break;
     }
     case LOTTERY:
     {
-      p->priority = 1;
-      cprintf("SYSLOG: Level of process %d changed to lottery with %d ticket(s)\n", p->pid, p->priority);
+      proc->priority = 3;
+      cprintf("SYSLOG: Level of process %d changed to lottery with %d ticket(s)\n", proc->pid, proc->priority);
       break;
     }
   }
 
-  p->state = RUNNABLE;
-
-  sched();
+  proc->state = RUNNABLE;
 
   release(&ptable.lock);
 

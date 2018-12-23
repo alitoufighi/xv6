@@ -7,7 +7,7 @@ int main()
 	int pid;
 
 	pid = getpid();
-	set_priority(PARENT_PRIORITY);
+	set_priority(getpid(), PARENT_PRIORITY);
 	printf(1, "Parent - Priority: %d Pid: %d\n", PARENT_PRIORITY, getpid());
 	int i;
 	for (i = 0; i < NCHILD; i++)
@@ -23,7 +23,7 @@ int main()
 		{
 			int random = rand(NCHILD) + 2;
 			printf(1, "Before Set Priority: Child %d\n", getpid());
-			set_priority(random);
+			set_priority(getpid(), random);
 			printf(1, "After  Set Priority: Child Pid: %d\tPriority: %d\n", getpid(), random);
 			break;
 		}
