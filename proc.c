@@ -146,8 +146,9 @@ found:
   p->context->eip = (uint)forkret;
   
   // First of all, the new processes are in priority queue (level 3)
-  p->level = PRIORITY;
-  p->priority = 1;
+  p->level = LOTTERY;
+  p->priority = 3;
+
   return p;
 }
 
@@ -507,14 +508,11 @@ sys_pstatus(void)
   return 1;
 }
 
-// int fcfs_index = 1; //TODO: THIS IS WRONG! WE NEED TO KEEP CREATION TIME IN PCB
-
 void
 scheduler(void)
 {
   struct proc *p, *p1 = NULL, *p2 = NULL, *p3 = NULL;
   struct cpu *c = mycpu();
-  // c->proc = 0;
   
   for(;;)
   {
@@ -532,9 +530,7 @@ scheduler(void)
         continue;
       
       if (p->level == LOTTERY)
-      {
         lottery_sum += p->priority;
-      }
     }
 
     if(lottery_sum == 0)
@@ -542,8 +538,8 @@ scheduler(void)
 
     int random_lottery = randint(lottery_sum);
     
-    uint min_prio = 0xFFFFFF;
-    uint min_entrant = 0xFFFFFF;
+    uint min_prio = 0xFFFFFFFF;
+    uint min_entrant = 0xFFFFFFFF;
 
     p1 = NULL;
     p2 = NULL;
@@ -558,11 +554,8 @@ scheduler(void)
       {
         if (random_lottery > p->priority)
           random_lottery -= p->priority;
-        else
-        {
-          if (p1 == NULL)
-            p1 = p;
-        }
+        else if (p1 == NULL)
+          p1 = p;
       }
       
       else if (p->level == FCFS)
@@ -585,17 +578,11 @@ scheduler(void)
     }
 
     if (p1 != NULL)
-    {
       p = p1;
-    }
     else if (p2 != NULL)
-    {
       p = p2;
-    }
     else if (p3 != NULL)
-    {
       p = p3;
-    }
     else
     {
       release(&ptable.lock);
