@@ -458,8 +458,8 @@ sys_pstatus(void)
 {
   struct proc *p;
   
-  cprintf("name\t\tpid\tstate\t\tqueue\tprio\ttickets\tcreation time\n");
-  cprintf("---------------------------------------------------------------------------------\n");
+  cprintf("name\t\tindex\tpid\tstate\t\tqueue\tprio\ttickets\tcreation time\n");
+  cprintf("-------------------------------------------------------------------------------------\n");
   acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
   {
@@ -497,8 +497,8 @@ sys_pstatus(void)
         break;
       }
     }
-      cprintf("%s\t%s%d\t%s\t%s%d\t%d\t%d\t%d\n",
-        p->name, (strlen(p->name)<8)?"        ":"" , p->pid, state,
+      cprintf("%s\t%s%d\t%d\t%s\t%s%d\t%d\t%d\t%d\n",
+        p->name, (strlen(p->name)<8)?"        ":"" , p->index, p->pid, state,
         (strlen(state)<8)?"        ":"",p->level, (p->level == PRIORITY)?p->priority:-1,
         (p->level==LOTTERY)?p->priority:-1, p->ctime
       );
