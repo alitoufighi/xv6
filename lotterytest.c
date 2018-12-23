@@ -33,6 +33,10 @@ int main()
 	
 	if (pid > 0)
 	{
+		double x = 1;
+		double z;
+		for ( z = 0; z < 8000000.0; z += 0.1 )
+         	x =  x + 3.14 * 89.64; 
 		for(i = 0; i < 10000; ++i)
 			for(j = 0; j < 10000; j++); // waiting randomly before changing level
 		
