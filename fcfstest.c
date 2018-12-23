@@ -5,12 +5,12 @@
 int main()
 {
 	int pid;
-
+	int i, j;
 	pid = getpid();
 
 	change_level(2);
 
-	for (int i = 0; i < NCHILD; i++)
+	for (i = 0; i < NCHILD; i++)
 		if (pid > 0)
 			pid = fork();
 	
@@ -21,11 +21,11 @@ int main()
 	
 	else if (pid == 0)
 	{
-		for (long int i = 0; i < 10000; i++)
-			for (long int j = 0; j < 10000; j++);
+		for (i = 0; i < 10000; i++)
+			for (j = 0; j < 10000; j++);
 		change_level(2);
-		for (long int i = 0; i < 10000; i++)
-			for (long int j = 0; j < 10000; j++);
+		for (i = 0; i < 10000; i++)
+			for (j = 0; j < 10000; j++);
 		printf(1, "Number is %d\n", getpid());
 
 	}
@@ -33,7 +33,7 @@ int main()
 	else
 	{
 		// printf(1, "waiting\n");
-		for (int i = 0; i < NCHILD; i++)
+		for (i = 0; i < NCHILD; i++)
 			wait();
 		
 		printf(1, "user program finished\n");

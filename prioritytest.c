@@ -9,8 +9,8 @@ int main()
 	pid = getpid();
 	set_priority(PARENT_PRIORITY);
 	printf(1, "Parent - Priority: %d Pid: %d\n", PARENT_PRIORITY, getpid());
-
-	for (int i = 0; i < NCHILD; i++)
+	int i;
+	for (i = 0; i < NCHILD; i++)
 	{
 		pid = fork();
 		
@@ -32,7 +32,7 @@ int main()
 	if (pid > 0)
 	{
 		printf(1, "Waiting for children\n");
-		for (int i = 0; i < NCHILD; i++)
+		for (i = 0; i < NCHILD; i++)
 			wait();
 		
 		printf(1, "User program finished\n");

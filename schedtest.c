@@ -9,14 +9,13 @@
 int main()
 {
 	int pid;
-
+	int i, j;
 	pid = getpid();
 
-	// printf(1, "%d current\n", pid);
 	change_level(3);
 	set_priority(1000);
 
-	for (int i = 0; i < L3NCHILD; i++)
+	for (i = 0; i < L3NCHILD; i++)
 	{
 		pid = fork();
 		
@@ -37,7 +36,7 @@ int main()
 	
 	if (pid > 0)
 	{
-		for (int i = 0; i < L2NCHILD; i++){
+		for (i = 0; i < L2NCHILD; i++){
 			if (pid > 0)
 				pid = fork();
 
@@ -50,7 +49,7 @@ int main()
 			{
 				int random = rand(25000);
 				printf(1, "Before changing level: Process %d waiting for %d\n", getpid(), random);
-				for(int i = 0; i < random * 12345; ++i); // waiting randomly before changing level
+				for(i = 0; i < random * 12345; ++i); // waiting randomly before changing level
 				change_level(2);
 				printf(1, "After  changing level: Process %d\n", getpid());
 				break;
@@ -59,7 +58,7 @@ int main()
 
 		if (pid > 0)
 		{
-			for (int i = 0; i < L1NCHILD; i++)
+			for (i = 0; i < L1NCHILD; i++)
 			{
 				pid = fork();
 			
@@ -80,8 +79,8 @@ int main()
 
 			if (pid > 0)
 			{
-				for(int i = 0; i < 10000; ++i)
-					for(int j = 0; j < 10000; j++); // waiting randomly before changing level
+				for(i = 0; i < 10000; ++i)
+					for(j = 0; j < 10000; j++); // waiting randomly before changing level
 				
 				change_level(3);
 				set_priority(100);
@@ -89,7 +88,7 @@ int main()
 				pstatus();
  
 				printf(1, "Waiting for children\n");
-				for (int i = 0; i < (L1NCHILD + L2NCHILD + L3NCHILD); i++)
+				for (i = 0; i < (L1NCHILD + L2NCHILD + L3NCHILD); i++)
 					wait();
 				
 				printf(1, "User program finished\n");

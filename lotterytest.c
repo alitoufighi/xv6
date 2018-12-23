@@ -5,14 +5,14 @@
 int main()
 {
 	int pid;
-
+	int i, j;
 	pid = getpid();
 
 	// printf(1, "%d current\n", pid);
 	// change_level(1);
 	set_priority(2);
 
-	for (int i = 0; i < NCHILD; i++)
+	for (i = 0; i < NCHILD; i++)
 	{
 		pid = fork();
 	
@@ -33,14 +33,14 @@ int main()
 	
 	if (pid > 0)
 	{
-		for(int i = 0; i < 10000; ++i)
-			for(int j = 0; j < 10000; j++); // waiting randomly before changing level
+		for(i = 0; i < 10000; ++i)
+			for(j = 0; j < 10000; j++); // waiting randomly before changing level
 		
 		pstatus();
 		// set_lottery(1);
 
 		printf(1, "Waiting for children\n");
-		for (int i = 0; i < NCHILD; i++)
+		for (i = 0; i < NCHILD; i++)
 			wait();
 		
 		printf(1, "User program finished\n");
