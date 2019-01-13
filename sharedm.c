@@ -12,12 +12,17 @@
 // static
 // int mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm);
 
-struct shm_info* find_shm_info(int id){
+struct shm_info* find_shm_info(int id)
+{
 	struct shm_info* info = NULL;
-	for(int i = 0; i < SHM_COUNT; ++i){
-		info = &shm_table.shm_information[i];
-		if(info->id == id && info->used)
+	for(int i = 0; i < SHM_COUNT; ++i)
+	{
+		cprintf("id : %d \n", shm_table.shm_information[i].id);
+		if(shm_table.shm_information[i].id == id && shm_table.shm_information[i].used == 1)
+		{
+			info = &shm_table.shm_information[i];
 			break;
+		}
 	}
 
 	return info;
@@ -60,27 +65,32 @@ int sys_shm_open(void)
 
 	if (argint(1, &pgcount) < 0)
 		return -1;
-	
+
 	if (pgcount >= MAX_PAGE_PER_SHM)
 		return -1;
 
 	if (argint(2, &flag) < 0)
 		return -1;
 
-	if (check_flag(flag))
-		return -1;
-	
+	// if (check_flag(flag))
+	// 	return -1;	
 
 	acquire(&shm_table.lock);
-	if (check_id(id))
+
+	/// MUST clear
+	// if (check_id(id))
+	// {
+	// 	release(&shm_table.lock);
+	// 	return -1;
+	// }
+
+
+	struct shm_info* info = find_unused_shm_info();
+	if(info == NULL)
 	{
 		release(&shm_table.lock);
 		return -1;
 	}
-
-	struct shm_info* info = find_unused_shm_info();
-	if(info == NULL)
-		return -1;
 
 	info->owner_pid = myproc()->pid;
 	info->id = id;
@@ -97,6 +107,10 @@ int sys_shm_open(void)
 		info->frame[i] = frame;
 	}
 
+	info->used = 1;
+
+	release(&shm_table.lock);
+
 	return 1;
 }
 
@@ -109,11 +123,19 @@ int sys_shm_attach(void)
 
 	acquire(&shm_table.lock);
 
-	if(!check_id(id)){
+	// if(!check_id(id)){
+	// 	release(&shm_table.lock);
+	// 	return -1;
+	// }
+
+	struct shm_info* info = find_shm_info(id);
+
+	if (!info)
+	{
+		cprintf("id not found\n");
 		release(&shm_table.lock);
 		return -1;
 	}
-	struct shm_info* info = find_shm_info(id);
 
 	if (!has_permission(info))
 	{
@@ -121,16 +143,21 @@ int sys_shm_attach(void)
 		return -1;
 	}
 
-	info->refcnt++; 
+	info->refcnt += 1; 
 	int index;
 	struct proc* curproc = myproc();
 	void* return_mem = (void*)curproc->sz;
 
+
+
 	for (index = 0; index < info->size; index++)
 	{
 		/// TODO: set flags
-		if (mappages(curproc->pgdir, (void*)curproc->sz, PGSIZE,
-				*(info->frame[index]), PTE_P | PTE_W | PTE_U) < 0){
+		void* old_sz = (void*)curproc->sz;
+
+		if (mappages(curproc->pgdir, old_sz, PGSIZE,
+				*(info->frame[index]), PTE_P | PTE_W | PTE_U) < 0)
+		{
 			release(&shm_table.lock);
 			return -1;
 		}
@@ -140,7 +167,7 @@ int sys_shm_attach(void)
 
 	release(&shm_table.lock);
 
-	return return_mem;
+	return (int)return_mem;
 }
 
 int sys_shm_close(void)
@@ -149,12 +176,14 @@ int sys_shm_close(void)
 	if (argint(0, &id) <0)
 		return -1;
 	
-	if (check_id(id))
-		return -1;
+	// if (check_id(id))
+	// 	return -1;
 	
+
 	acquire(&shm_table.lock);
 
 	struct shm_info* info = find_shm_info(id);
+	
 	if(info == NULL)
 	{
 		release(&shm_table.lock);
@@ -167,16 +196,21 @@ int sys_shm_close(void)
 		return -1;
 	}
 
+
 	info->refcnt--;
+
 
 	for (int i  = 0; i < info->size; i++)
 	{
-		kfree(info->frame[i]);
+		kfree((char*)(info->frame[i]));
+		cprintf("free %d \n", i);
 	}
 
 	if (info->refcnt == 0)
 		info->used = 0;
 	
+	cprintf("enddd\n");
+
 	release(&shm_table.lock);
 
 	return 1;

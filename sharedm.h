@@ -21,7 +21,7 @@ struct {
 		uint flags;
 		int refcnt;
 		int size;
-		uint *frame[MAX_PAGE_PER_SHM];
+		uint* frame[MAX_PAGE_PER_SHM];
 	} shm_information[SHM_COUNT];
 } shm_table;
 
