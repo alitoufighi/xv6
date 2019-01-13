@@ -15,6 +15,7 @@ struct {
 	struct spinlock lock;
 
 	struct shm_info {
+		int used;	// is this being used?
 		int id;
 		int owner_pid;
 		uint flags;
