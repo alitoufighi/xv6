@@ -6,12 +6,7 @@
 #define NULL 0x0000
 
 struct shm_info* find_shm_info(int id){
-<<<<<<< HEAD
-	struct shm_info* info = 0x0000;
-=======
-	acquire(&shm_table.lock);
 	struct shm_info* info = NULL;
->>>>>>> 5f754dec0ba7916614c03089228475d205f42418
 	for(int i = 0; i < SHM_COUNT; ++i){
 		info = &shm_table.shm_information[i];
 		if(info->id == id)
