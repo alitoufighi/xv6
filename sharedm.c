@@ -3,7 +3,23 @@
 
 int sys_shm_open(void)
 {
-	return 0;
+	int id, pgcount, flag;
+	if (argint(0, &id) <0)
+		return -1;
+	
+	if (argint(1, &pgcount) <0)
+		return -1;
+
+	if (argint(2, &flag) < 0)
+		return -1;
+
+	acquire(&shm_table.lock);
+
+
+
+	release(&shm_table.lock);
+
+	return 1;
 }
 
 int sys_shm_attach(void)
@@ -13,5 +29,15 @@ int sys_shm_attach(void)
 
 int sys_shm_close(void)
 {
-	return 0;
+	int id;
+	if (argint(0, &id) <0)
+		return -1;
+	
+	acquire(&shm_table.lock);
+
+
+
+	release(&shm_table.lock);
+
+	return 1;
 }
