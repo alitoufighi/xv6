@@ -2,16 +2,28 @@
 #include "proc.h"
 #include "syscall.h"
 
+#define NULL 0x0000
+
 struct shm_info* find_shm_info(int id){
 	acquire(&shm_table.lock);
-	struct shm_info* info = 0x0000;
+	struct shm_info* info = NULL;
 	for(int i = 0; i < SHM_COUNT; ++i){
-		*info = shm_table.shm_information[i];
+		info = &shm_table.shm_information[i];
 		if(info->id == id)
 			break;
 	}
 	release(&shm_table.lock);
 
+	return info;
+}
+
+struct shm_info* find_unused_shm_info() {
+	struct shm_info* info = NULL;
+	for(int i = 0; i < SHM_COUNT; ++i) {
+		info = &shm_table.shm_information[i];
+		if(!(info->used))
+			break;
+	}
 	return info;
 }
 
@@ -53,17 +65,21 @@ int sys_shm_open(void)
 
 	acquire(&shm_table.lock);
 
-	struct shm_info info = shm_table.shm_information[id];
-	info.owner_pid = myproc()->pid;
-	info.flags = flag;
-	info.refcnt = 0;
-	info.size = pgcount;
+	struct shm_info* info = find_unused_shm_info();
+	if(info == NULL)
+		return -1;
+
+	info->owner_pid = myproc()->pid;
+	info->id = id;
+	info->flags = flag;
+	info->refcnt = 0;
+	info->size = pgcount;
 	uint* frame;
 	for (int i = 0; i < pgcount; ++i) {
 		if((frame = kalloc()) == 0){
 			return -1;
 		}
-		info.frame[i] = frame;
+		info->frame[i] = frame;
 	}
 
 	release(&shm_table.lock);
