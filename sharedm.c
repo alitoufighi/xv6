@@ -148,15 +148,15 @@ int sys_shm_attach(void)
 	struct proc* curproc = myproc();
 	void* return_mem = (void*)curproc->sz;
 
-
+	cprintf("size of proc before %d\n", curproc->sz);
 
 	for (index = 0; index < info->size; index++)
 	{
 		/// TODO: set flags
-		uint old_sz = curproc->sz;
 
-		if (mappages(curproc->pgdir, (void*)PGROUNDUP(old_sz), PGSIZE,
-				*(info->frame[index]), PTE_P | PTE_W | PTE_U) < 0)
+		cprintf("address %p attached iteration %d\n", *info->frame[index], index);
+		if (mappages(curproc->pgdir, (void*)PGROUNDUP(curproc->sz), PGSIZE,
+				*info->frame[index], PTE_W | PTE_U) < 0)
 		{
 			release(&shm_table.lock);
 			return -1;
@@ -164,6 +164,8 @@ int sys_shm_attach(void)
 
 		curproc->sz += PGSIZE;
 	}
+	
+	cprintf("size of proc after %d\n", curproc->sz);
 
 	release(&shm_table.lock);
 
@@ -197,28 +199,20 @@ int sys_shm_close(void)
 		return -1;
 	}
 
-
 	info->refcnt--;
 
-
-	// for (int i = info->size - 1; i >= 0 ; i--)
-	// {
-	// 	kfree((char*)(info->frame[i]));
-	// 	curproc->sz -= PGSIZE;
-	// 	cprintf("free %d \n", i);
-	// }
-
 	if (info->refcnt == 0){
-		for (int i = info->size - 1; i >= 0 ; i--)
+		for (int i = (info->size - 1); i >= 0 ; i--)
 		{
-			kfree((char*)(info->frame[i]));
+			cprintf("physical mem freed %p iteration %d\n", *(info->frame[i]), i);
+			kfree(info->frame[i]);
 			curproc->sz -= PGSIZE;
-			cprintf("free %d \n", i);
+			cprintf("free %d iteration\n", i);
 		}
 		info->used = 0;
 	}
 	
-	cprintf("enddd\n");
+	cprintf("size of proc after close shm %d\n", curproc->sz);
 
 	release(&shm_table.lock);
 
