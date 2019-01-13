@@ -1,15 +1,22 @@
-#include "sharedm.h"
+#include "types.h"
+#include "defs.h"
+#include "param.h"
+#include "mmu.h"
 #include "proc.h"
+#include "sharedm.h"
 #include "syscall.h"
-// #include "vm.c"
+#include "vm.h"
 
 #define NULL 0x0000
+
+// static
+// int mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm);
 
 struct shm_info* find_shm_info(int id){
 	struct shm_info* info = NULL;
 	for(int i = 0; i < SHM_COUNT; ++i){
 		info = &shm_table.shm_information[i];
-		if(info->id == id)
+		if(info->id == id && info->used)
 			break;
 	}
 
@@ -39,7 +46,7 @@ int has_permission(struct shm_info* info)
 int check_flag(int flag){
 	if (flag != ONLY_CHILD_CAN_ATTACH ||
 		flag != ONLY_OWNER_WRITE ||
-		flag != ONLY_CHILD_CAN_ATTACH | ONLY_OWNER_WRITE) {
+		flag != (ONLY_CHILD_CAN_ATTACH | ONLY_OWNER_WRITE)) {
 		return -1;
 	}
 	return 0;
@@ -83,7 +90,7 @@ int sys_shm_open(void)
 
 	uint* frame;
 	for (int i = 0; i < pgcount; ++i) {
-		if((frame = kalloc()) == 0){
+		if((frame = (uint*)kalloc()) == 0){
 			release(&shm_table.lock);
 			return -1;
 		}
@@ -100,12 +107,12 @@ int sys_shm_attach(void)
 		return -1;
 	}
 
-	if(!check_id(id)){
-		return -1;
-	}
-
 	acquire(&shm_table.lock);
 
+	if(!check_id(id)){
+		release(&shm_table.lock);
+		return -1;
+	}
 	struct shm_info* info = find_shm_info(id);
 
 	if (!has_permission(info))
@@ -116,15 +123,24 @@ int sys_shm_attach(void)
 
 	info->refcnt++; 
 	int index;
+	struct proc* curproc = myproc();
+	void* return_mem = (void*)curproc->sz;
 
 	for (index = 0; index < info->size; index++)
 	{
-		// if (mappages)
+		/// TODO: set flags
+		if (mappages(curproc->pgdir, (void*)curproc->sz, PGSIZE,
+				*(info->frame[index]), PTE_P | PTE_W | PTE_U) < 0){
+			release(&shm_table.lock);
+			return -1;
+		}
+
+		curproc->sz += PGSIZE;
 	}
 
 	release(&shm_table.lock);
 
-	return 0x00000;
+	return return_mem;
 }
 
 int sys_shm_close(void)
@@ -138,8 +154,29 @@ int sys_shm_close(void)
 	
 	acquire(&shm_table.lock);
 
+	struct shm_info* info = find_shm_info(id);
+	if(info == NULL)
+	{
+		release(&shm_table.lock);
+		return -1;
+	}
 
+	if (info->refcnt < 1)
+	{
+		release(&shm_table.lock);
+		return -1;
+	}
 
+	info->refcnt--;
+
+	for (int i  = 0; i < info->size; i++)
+	{
+		kfree(info->frame[i]);
+	}
+
+	if (info->refcnt == 0)
+		info->used = 0;
+	
 	release(&shm_table.lock);
 
 	return 1;
