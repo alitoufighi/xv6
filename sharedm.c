@@ -2,6 +2,7 @@
 #include "defs.h"
 #include "param.h"
 #include "mmu.h"
+#include "memlayout.h"
 #include "proc.h"
 #include "sharedm.h"
 #include "syscall.h"
@@ -156,7 +157,7 @@ int sys_shm_attach(void)
 
 		cprintf("address %p attached iteration %d\n", *info->frame[index], index);
 		if (mappages(curproc->pgdir, (void*)PGROUNDUP(curproc->sz), PGSIZE,
-				*info->frame[index], PTE_W | PTE_U) < 0)
+				V2P(*info->frame[index]), PTE_W | PTE_U) < 0)
 		{
 			release(&shm_table.lock);
 			return -1;
@@ -205,7 +206,7 @@ int sys_shm_close(void)
 		for (int i = (info->size - 1); i >= 0 ; i--)
 		{
 			cprintf("physical mem freed %p iteration %d\n", *(info->frame[i]), i);
-			kfree(info->frame[i]);
+			kfree(*info->frame[i]);
 			curproc->sz -= PGSIZE;
 			cprintf("free %d iteration\n", i);
 		}
