@@ -17,9 +17,9 @@ struct shm_info* find_shm_info(int id)
 	struct shm_info* info = NULL;
 	for(int i = 0; i < SHM_COUNT; ++i)
 	{
-		cprintf("id : %d \n", shm_table.shm_information[i].id);
 		if(shm_table.shm_information[i].id == id && shm_table.shm_information[i].used == 1)
 		{
+			cprintf("id : %d \n", shm_table.shm_information[i].id);
 			info = &shm_table.shm_information[i];
 			break;
 		}
@@ -179,6 +179,7 @@ int sys_shm_close(void)
 	// if (check_id(id))
 	// 	return -1;
 	
+	struct proc* curproc = myproc();
 
 	acquire(&shm_table.lock);
 
@@ -200,14 +201,22 @@ int sys_shm_close(void)
 	info->refcnt--;
 
 
-	for (int i  = 0; i < info->size; i++)
-	{
-		kfree((char*)(info->frame[i]));
-		cprintf("free %d \n", i);
-	}
+	// for (int i = info->size - 1; i >= 0 ; i--)
+	// {
+	// 	kfree((char*)(info->frame[i]));
+	// 	curproc->sz -= PGSIZE;
+	// 	cprintf("free %d \n", i);
+	// }
 
-	if (info->refcnt == 0)
+	if (info->refcnt == 0){
+		for (int i = info->size - 1; i >= 0 ; i--)
+		{
+			kfree((char*)(info->frame[i]));
+			curproc->sz -= PGSIZE;
+			cprintf("free %d \n", i);
+		}
 		info->used = 0;
+	}
 	
 	cprintf("enddd\n");
 
