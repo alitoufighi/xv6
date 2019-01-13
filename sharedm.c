@@ -14,6 +14,9 @@ int sys_shm_open(void)
 	if (argint(0, &id) <0)
 		return -1;
 	
+	if (check_id(id))
+		return -1;
+
 	if (argint(1, &pgcount) <0)
 		return -1;
 
@@ -50,6 +53,9 @@ int sys_shm_close(void)
 {
 	int id;
 	if (argint(0, &id) <0)
+		return -1;
+	
+	if (check_id(id))
 		return -1;
 	
 	acquire(&shm_table.lock);
