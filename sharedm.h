@@ -8,6 +8,9 @@
 #define MAX_PAGE_PER_SHM 16
 #define SHM_COUNT 32
 
+#define ONLY_OWNER_WRITE 1
+#define ONLY_CHILD_CAN_ATTACH 2
+
 struct {
 	struct spinlock lock;
 

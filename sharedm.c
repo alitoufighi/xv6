@@ -8,6 +8,15 @@ int check_id(int id){
 	return 0;
 }
 
+int check_flag(int flag){
+	if(flag != ONLY_CHILD_CAN_ATTACH ||
+		flag != ONLY_OWNER_WRITE ||
+		flag != ONLY_CHILD_CAN_ATTACH | ONLY_OWNER_WRITE) {
+		return -1;
+	}
+	return 0;
+}
+
 int sys_shm_open(void)
 {
 	int id, pgcount, flag;
@@ -17,7 +26,10 @@ int sys_shm_open(void)
 	if (check_id(id))
 		return -1;
 
-	if (argint(1, &pgcount) <0)
+	if(check_flag(flag))
+		return -1;
+
+	if (argint(1, &pgcount) < 0)
 		return -1;
 
 	if (argint(2, &flag) < 0)
@@ -25,6 +37,9 @@ int sys_shm_open(void)
 
 	acquire(&shm_table.lock);
 
+	struct shm_info info = shm_table.shm_information[id];
+	info.owner_pid = myproc()->pid;
+	if()
 
 
 	release(&shm_table.lock);
