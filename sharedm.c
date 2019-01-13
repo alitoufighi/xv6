@@ -2,11 +2,22 @@
 #include "proc.h"
 #include "syscall.h"
 
-int check_id(int id){
-	if (id < 0 || id >= SHM_COUNT) {
-		return -1;
+struct shm_info* find_shm_info(int id){
+	acquire(&shm_table.lock);
+	struct shm_info* info = 0x0000;
+	for(int i = 0; i < SHM_COUNT; ++i){
+		*info = shm_table.shm_information[i];
+		if(info->id == id)
+			break;
 	}
-	return 0;
+	release(&shm_table.lock);
+
+	return info;
+}
+
+int check_id(int id){
+	struct shm_info* info = find_shm_info(id);
+	return (int)info;
 }
 
 int check_flag(int flag){
@@ -67,7 +78,7 @@ int sys_shm_attach(void)
 		return -1;
 	}
 
-	if(check_id(id)){
+	if(!check_id(id)){
 		return -1;
 	}
 
