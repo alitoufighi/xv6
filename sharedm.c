@@ -153,9 +153,9 @@ int sys_shm_attach(void)
 	for (index = 0; index < info->size; index++)
 	{
 		/// TODO: set flags
-		void* old_sz = (void*)curproc->sz;
+		uint old_sz = curproc->sz;
 
-		if (mappages(curproc->pgdir, old_sz, PGSIZE,
+		if (mappages(curproc->pgdir, (void*)PGROUNDUP(old_sz), PGSIZE,
 				*(info->frame[index]), PTE_P | PTE_W | PTE_U) < 0)
 		{
 			release(&shm_table.lock);
