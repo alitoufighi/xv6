@@ -7,6 +7,7 @@
 #include "mmu.h"
 #include "proc.h"
 #include "elf.h"
+#include "sharedm.h"
 
 extern char data[];  // defined by kernel.ld
 pde_t *kpgdir;  // for use in scheduler()
@@ -261,7 +262,7 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
   if(newsz >= oldsz)
     return oldsz;
 
-  cprintf("proc size : %d\n", myproc()->sz);
+  cprintf("proc pid : %d , size : %d\n", myproc()->pid, myproc()->sz);
 
   a = PGROUNDUP(newsz);
   for(; a  < oldsz; a += PGSIZE){
@@ -273,9 +274,7 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       if(pa == 0)
         panic("kfree");
       char *v = P2V(pa);
-      cprintf("kfreee bef %p\n", v);
       kfree(v);
-      cprintf("kfreee af\n");
       *pte = 0;
     }
   }
@@ -292,7 +291,7 @@ freevm(pde_t *pgdir)
   if(pgdir == 0)
     panic("freevm: no pgdir");
 
-  cprintf("into dealloc\n");
+  cprintf("into dealloc pid %d \n", myproc()->pid);
   deallocuvm(pgdir, KERNBASE, 0);
   for(i = 0; i < NPDENTRIES; i++){
     if(pgdir[i] & PTE_P){
@@ -316,6 +315,39 @@ clearpteu(pde_t *pgdir, char *uva)
   *pte &= ~PTE_U;
 }
 
+static struct shm_info* is_va_shared(struct proc* pr, int va)
+{
+  int i = 0;
+  int x = -1;
+  int shm_id = -1;
+
+  for (i = 0; i < pr->num_of_shmem; i++)
+  {
+    if (va == pr->shmem_data[i].start_va)
+    {
+      x = i;
+      shm_id = pr->shmem_data[i].shmem_id;
+      break;
+    }
+  }
+
+  if (x < 0)
+    return NULL;
+
+  acquire(&shm_table.lock);
+  for (i = 0; i < SHM_COUNT; i++)
+  {
+    if (shm_table.shm_information[i].id == shm_id)
+    {
+      // va += PGSIZE * (shm_table.shm_information[i].size - 1);
+      shm_table.shm_information[i].refcnt++;
+      release(&shm_table.lock);
+      return &shm_table.shm_information[i];
+    }
+  }
+  release(&shm_table.lock);
+}
+
 // Given a parent process's page table, create a copy
 // of it for a child.
 pde_t*
@@ -325,22 +357,46 @@ copyuvm(pde_t *pgdir, uint sz)
   pte_t *pte;
   uint pa, i, flags;
   char *mem;
+  struct shm_info* shared_info;
 
   if((d = setupkvm()) == 0)
     return 0;
-  for(i = 0; i < sz; i += PGSIZE){
+  for(i = 0; i < sz; i += PGSIZE)
+  {
     if((pte = walkpgdir(pgdir, (void *) i, 0)) == 0)
       panic("copyuvm: pte should exist");
     if(!(*pte & PTE_P))
       panic("copyuvm: page not present");
     pa = PTE_ADDR(*pte);
     flags = PTE_FLAGS(*pte);
-    if((mem = kalloc()) == 0)
-      goto bad;
-    memmove(mem, (char*)P2V(pa), PGSIZE);
-    if(mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0) {
-      kfree(mem);
-      goto bad;
+
+    shared_info = is_va_shared(myproc(), i);
+    // VM is shared
+    if (shared_info != NULL)
+    {
+      int index = 0;
+      for (index= 0; index < shared_info->size; index++)
+      {
+        mem = (char*)shared_info->frame[index];
+        if(mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0) {
+          kfree(mem);
+          goto bad;
+        }
+        i += PGSIZE;
+      }
+      i -= PGSIZE;
+    }
+
+    // VM is not shared (typical copy)
+    else
+    {
+      if((mem = kalloc()) == 0)
+        goto bad;
+      memmove(mem, (char*)P2V(pa), PGSIZE);
+      if(mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0) {
+        kfree(mem);
+        goto bad;
+      }
     }
   }
   return d;

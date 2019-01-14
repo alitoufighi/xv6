@@ -12,11 +12,22 @@ int main()
 	char* shared_mem = (char*)shm_attach(1);
 	printf(1, "shm_attach\n");
 
-	// shared_mem[0] = 'x';
-	// printf(1, "shm_set\n");
+	shared_mem = "saeeeedddddddd";
+	printf(1, "%s\n", shared_mem);
 
-	ret = shm_close(1);
-	// printf(1, "%d\n", ret);
+	// if (fork() == 0)
+	// {
+	// 	// char* child_mem = (char*)shm_attach(1);
+	// 	shared_mem[0] = 'd';
+	// 	printf(1, "child writing %s\n", shared_mem);
+	// 	shm_close(1);
+	// 	exit();
+	// }
 
+	// else
+	// {
+		// wait();
+	shm_close(1);
 	exit();
+	// }
 }

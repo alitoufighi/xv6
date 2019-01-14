@@ -36,6 +36,8 @@ struct context {
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
+#define SHMEM_NUM 16
+
 // Per-process state
 struct proc {
   uint sz;                     // Size of process memory (bytes)
@@ -50,6 +52,13 @@ struct proc {
   int killed;                  // If non-zero, have been killed
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
+
+  int num_of_shmem;
+  struct shmem {
+    int shmem_id;
+    uint start_va;
+  } shmem_data[SHMEM_NUM];
+
   char name[16];               // Process name (debugging)
 };
 

@@ -5,6 +5,7 @@
 #include "defs.h"
 #include "spinlock.h"
 
+#define NULL 0x00000000
 #define MAX_PAGE_PER_SHM 16
 #define SHM_COUNT 32
 

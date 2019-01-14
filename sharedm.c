@@ -2,6 +2,7 @@
 #include "defs.h"
 #include "param.h"
 #include "mmu.h"
+#include "memlayout.h"
 #include "proc.h"
 #include "sharedm.h"
 #include "syscall.h"
@@ -104,6 +105,8 @@ int sys_shm_open(void)
 			release(&shm_table.lock);
 			return -1;
 		}
+
+		cprintf("address %p opened iteration %d\n", frame, i);
 		info->frame[i] = frame;
 	}
 
@@ -148,15 +151,15 @@ int sys_shm_attach(void)
 	struct proc* curproc = myproc();
 	void* return_mem = (void*)curproc->sz;
 
-	cprintf("size of proc before %d\n", curproc->sz);
+	cprintf("size of proc %d before %d\n", curproc->pid, curproc->sz);
 
 	for (index = 0; index < info->size; index++)
 	{
 		/// TODO: set flags
 
-		cprintf("address %p attached iteration %d\n", *info->frame[index], index);
-		if (mappages(curproc->pgdir, (void*)PGROUNDUP(curproc->sz), PGSIZE,
-				*info->frame[index], PTE_W | PTE_U) < 0)
+		cprintf("address %p attached iteration %d\n", info->frame[index], index);
+		// mappages(pgdir, (char*)a, PGSIZE, V2P(mem), PTE_W|PTE_U) < 0
+		if (mappages(curproc->pgdir, PGROUNDUP(curproc->sz), PGSIZE, V2P(info->frame[index]), PTE_W | PTE_U) < 0)
 		{
 			release(&shm_table.lock);
 			return -1;
@@ -164,8 +167,12 @@ int sys_shm_attach(void)
 
 		curproc->sz += PGSIZE;
 	}
-	
-	cprintf("size of proc after %d\n", curproc->sz);
+
+	curproc->shmem_data[curproc->num_of_shmem].shmem_id = info->id;
+	curproc->shmem_data[curproc->num_of_shmem].start_va = curproc->sz - info->size * PGSIZE;
+	curproc->num_of_shmem++;
+
+	cprintf("size of proc %d after %d\n", curproc->pid, curproc->sz);
 
 	release(&shm_table.lock);
 
@@ -201,18 +208,26 @@ int sys_shm_close(void)
 
 	info->refcnt--;
 
-	if (info->refcnt == 0){
+	if (info->refcnt == 0)
+	{
 		for (int i = (info->size - 1); i >= 0 ; i--)
 		{
-			cprintf("physical mem freed %p iteration %d\n", *(info->frame[i]), i);
-			kfree(info->frame[i]);
+			cprintf("physical mem freed %p iteration %d\n", (char*)(info->frame[i]), i);
+			/// Dont know why
+			// kfree(info->frame[i]);
 			curproc->sz -= PGSIZE;
 			cprintf("free %d iteration\n", i);
 		}
 		info->used = 0;
 	}
 	
-	cprintf("size of proc after close shm %d\n", curproc->sz);
+	else 
+	{
+		cprintf("only size is decreasing\n");
+		curproc->sz -= info->size * PGSIZE;
+	}
+
+	cprintf("size of proc %d after close shm %d\n", curproc->pid, curproc->sz);
 
 	release(&shm_table.lock);
 
