@@ -214,7 +214,7 @@ int sys_shm_close(void)
 		{
 			cprintf("physical mem freed %p iteration %d\n", (char*)(info->frame[i]), i);
 			/// Dont know why
-			// kfree(info->frame[i]);
+			kfree(info->frame[i]);
 			curproc->sz -= PGSIZE;
 			cprintf("free %d iteration\n", i);
 		}
@@ -224,6 +224,7 @@ int sys_shm_close(void)
 	else 
 	{
 		cprintf("only size is decreasing\n");
+		//TODO: find pte and set it to zero (like deallocuvm)
 		curproc->sz -= info->size * PGSIZE;
 	}
 
