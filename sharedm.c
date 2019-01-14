@@ -10,49 +10,29 @@
 
 #define NULL 0x0000
 
-// static
-// int mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm);
-
-struct shm_info* find_shm_info(int id)
+int has_attach_permission(struct shm_info* info, struct proc* p)
 {
-	struct shm_info* info = NULL;
-	for(int i = 0; i < SHM_COUNT; ++i)
+	if (!((info->flags >> 1) & 0x1))
+		return 1;
+
+	struct proc* parent_proc = p->parent;
+	while(parent_proc->pid != 1)
 	{
-		if(shm_table.shm_information[i].id == id && shm_table.shm_information[i].used == 1)
-		{
-			cprintf("id : %d \n", shm_table.shm_information[i].id);
-			info = &shm_table.shm_information[i];
-			break;
-		}
+		if (parent_proc->pid == info->owner_pid)
+			return 1;
+
+		parent_proc = parent_proc->parent;
 	}
 
-	return info;
+	return 0;
 }
 
-struct shm_info* find_unused_shm_info() {
-	struct shm_info* info = NULL;
-	for(int i = 0; i < SHM_COUNT; ++i) {
-		info = &shm_table.shm_information[i];
-		if(!(info->used))
-			break;
-	}
-	return info;
-}
-
-int check_id(int id){
-	struct shm_info* info = find_shm_info(id);
-	return (int)info;
-}
-
-int has_permission(struct shm_info* info)
-{
-	return 1;
-}
-
-int check_flag(int flag){
-	if (flag != ONLY_CHILD_CAN_ATTACH ||
-		flag != ONLY_OWNER_WRITE ||
-		flag != (ONLY_CHILD_CAN_ATTACH | ONLY_OWNER_WRITE)) {
+int check_valid_flag(int flag){
+	if (flag != ONLY_CHILD_CAN_ATTACH &&
+		flag != ONLY_OWNER_WRITE &&
+		flag != (ONLY_CHILD_CAN_ATTACH | ONLY_OWNER_WRITE) &&
+		flag != 0) 
+	{
 		return -1;
 	}
 	return 0;
@@ -67,38 +47,38 @@ int sys_shm_open(void)
 	if (argint(1, &pgcount) < 0)
 		return -1;
 
+	// cprintf("pgcount : %d \n", pgcount);
 	if (pgcount >= MAX_PAGE_PER_SHM)
 		return -1;
 
 	if (argint(2, &flag) < 0)
 		return -1;
 
-	// if (check_flag(flag))
-	// 	return -1;	
+	if (check_valid_flag(flag))
+		return -1;	
 
 	acquire(&shm_table.lock);
+	struct shm_info* info = NULL;
+	for (int i = 0; i < SHM_COUNT; i++)
+	{
+		if (shm_table.shm_information[i].used == 0)
+		{
+			info = &(shm_table.shm_information[i]);
+			break;
+		}
+	}
 
-	/// MUST clear
-	// if (check_id(id))
-	// {
-	// 	release(&shm_table.lock);
-	// 	return -1;
-	// }
-
-
-	struct shm_info* info = find_unused_shm_info();
 	if(info == NULL)
 	{
 		release(&shm_table.lock);
 		return -1;
 	}
-
 	info->owner_pid = myproc()->pid;
 	info->id = id;
+	// cprintf("id : %d, pid : %d\n", info->id, info->owner_pid);
 	info->flags = flag;
 	info->refcnt = 0;
 	info->size = pgcount;
-
 	uint* frame;
 	for (int i = 0; i < pgcount; ++i) {
 		if((frame = (uint*)kalloc()) == 0){
@@ -106,14 +86,11 @@ int sys_shm_open(void)
 			return -1;
 		}
 
-		cprintf("address %p opened iteration %d\n", frame, i);
+		// cprintf("address %p opened iteration %d\n", frame, i);
 		info->frame[i] = frame;
 	}
-
 	info->used = 1;
-
 	release(&shm_table.lock);
-
 	return 1;
 }
 
@@ -126,43 +103,62 @@ int sys_shm_attach(void)
 
 	acquire(&shm_table.lock);
 
-	// if(!check_id(id)){
-	// 	release(&shm_table.lock);
-	// 	return -1;
-	// }
-
-	struct shm_info* info = find_shm_info(id);
+	struct shm_info* info = NULL;
+	
+	for (int i = 0; i < SHM_COUNT; i++)
+	{
+		if (shm_table.shm_information[i].id == id)
+		{
+			// cprintf("id found \n");
+			info = &(shm_table.shm_information[i]);
+			break;
+		}
+	}
 
 	if (!info)
 	{
-		cprintf("id not found\n");
+		// cprintf("id not found\n");
 		release(&shm_table.lock);
 		return -1;
 	}
 
-	if (!has_permission(info))
+	struct proc* curproc = myproc();
+
+
+	if (!has_attach_permission(info, curproc))
 	{
+		// cprintf("no permission to attach\n");
 		release(&shm_table.lock);
 		return -1;
 	}
 
 	info->refcnt += 1; 
 	int index;
-	struct proc* curproc = myproc();
 	void* return_mem = (void*)curproc->sz;
 
-	cprintf("size of proc %d before %d\n", curproc->pid, curproc->sz);
+	// cprintf("size of proc %d before %d\n", curproc->pid, curproc->sz);
+
+	// cprintf("owner pid : %d \n", info->owner_pid);
+	// cprintf("attaching size : %d \n", info->size);
 
 	for (index = 0; index < info->size; index++)
 	{
-		/// TODO: set flags
-
-		cprintf("address %p attached iteration %d\n", info->frame[index], index);
-		// mappages(pgdir, (char*)a, PGSIZE, V2P(mem), PTE_W|PTE_U) < 0
-		if (mappages(curproc->pgdir, PGROUNDUP(curproc->sz), PGSIZE, V2P(info->frame[index]), PTE_W | PTE_U) < 0)
+		// cprintf("address %p attached iteration %d\n", info->frame[index], index);
+		if (info->flags % 2 == 0)
 		{
-			release(&shm_table.lock);
-			return -1;
+			if (mappages(curproc->pgdir, PGROUNDUP(curproc->sz), PGSIZE, V2P(info->frame[index]), PTE_W | PTE_U) < 0)
+			{
+				release(&shm_table.lock);
+				return -1;
+			}
+		}
+		else 
+		{
+			if (mappages(curproc->pgdir, PGROUNDUP(curproc->sz), PGSIZE, V2P(info->frame[index]), PTE_U) < 0)
+			{
+				release(&shm_table.lock);
+				return -1;
+			}
 		}
 
 		curproc->sz += PGSIZE;
@@ -172,7 +168,7 @@ int sys_shm_attach(void)
 	curproc->shmem_data[curproc->num_of_shmem].start_va = curproc->sz - info->size * PGSIZE;
 	curproc->num_of_shmem++;
 
-	cprintf("size of proc %d after %d\n", curproc->pid, curproc->sz);
+	// cprintf("size of proc %d after %d\n", curproc->pid, curproc->sz);
 
 	release(&shm_table.lock);
 
@@ -192,18 +188,16 @@ int sys_shm_close(void)
 
 	acquire(&shm_table.lock);
 
-	struct shm_info* info = find_shm_info(id);
+	struct shm_info* info = NULL;
 	
-	if(info == NULL)
+	for (int i = 0; i < SHM_COUNT; i++)
 	{
-		release(&shm_table.lock);
-		return -1;
-	}
-
-	if (info->refcnt < 1)
-	{
-		release(&shm_table.lock);
-		return -1;
+		if (shm_table.shm_information[i].id == id)
+		{
+			// cprintf("id found \n");
+			info = &(shm_table.shm_information[i]);
+			break;
+		}
 	}
 
 	info->refcnt--;
@@ -212,22 +206,31 @@ int sys_shm_close(void)
 	{
 		for (int i = (info->size - 1); i >= 0 ; i--)
 		{
-			cprintf("physical mem freed %p iteration %d\n", (char*)(info->frame[i]), i);
-			/// Dont know why
-			// kfree(info->frame[i]);
+			uint pa;
+			// cprintf("physical mem freed %p iteration %d\n", (char*)(info->frame[i]), i);
 			curproc->sz -= PGSIZE;
-			cprintf("free %d iteration\n", i);
+			uint* pte = walkpgdir(curproc->pgdir, (char*)curproc->sz, 0);
+			pa = PTE_ADDR(*pte);
+			char *v = P2V(pa);
+			kfree(v);
+			*pte = 0;
+			// cprintf("free %d iteration\n", i);
 		}
 		info->used = 0;
 	}
 	
 	else 
 	{
-		cprintf("only size is decreasing\n");
+		// cprintf("only size is decreasing\n");
 		curproc->sz -= info->size * PGSIZE;
+		uint* pte = walkpgdir(curproc->pgdir, (char*)curproc->sz, 0);
+		uint pa;
+		pa = PTE_ADDR(*pte);
+		char *v = P2V(pa);
+		*pte = 0;
 	}
 
-	cprintf("size of proc %d after close shm %d\n", curproc->pid, curproc->sz);
+	// cprintf("size of proc %d after close shm %d\n", curproc->pid, curproc->sz);
 
 	release(&shm_table.lock);
 

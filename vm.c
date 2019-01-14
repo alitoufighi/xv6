@@ -34,7 +34,7 @@ seginit(void)
 // Return the address of the PTE in page table pgdir
 // that corresponds to virtual address va.  If alloc!=0,
 // create any required page table pages.
-static pte_t *
+pte_t *
 walkpgdir(pde_t *pgdir, const void *va, int alloc)
 {
   pde_t *pde;
@@ -262,7 +262,7 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
   if(newsz >= oldsz)
     return oldsz;
 
-  cprintf("proc pid : %d , size : %d\n", myproc()->pid, myproc()->sz);
+  // cprintf("proc pid : %d , size : %d\n", myproc()->pid, myproc()->sz);
 
   a = PGROUNDUP(newsz);
   for(; a  < oldsz; a += PGSIZE){
@@ -291,7 +291,7 @@ freevm(pde_t *pgdir)
   if(pgdir == 0)
     panic("freevm: no pgdir");
 
-  cprintf("into dealloc pid %d \n", myproc()->pid);
+  // cprintf("into dealloc pid %d \n", myproc()->pid);
   deallocuvm(pgdir, KERNBASE, 0);
   for(i = 0; i < NPDENTRIES; i++){
     if(pgdir[i] & PTE_P){
@@ -359,7 +359,7 @@ copyuvm(pde_t *pgdir, uint sz)
   char *mem;
   struct shm_info* shared_info;
 
-  cprintf("CopyUVM\n");
+  // cprintf("CopyUVM\n");
   if((d = setupkvm()) == 0)
     return 0;
   for(i = 0; i < sz; i += PGSIZE)
