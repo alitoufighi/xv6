@@ -12,8 +12,8 @@ int main()
 	char* shared_mem = (char*)shm_attach(1);
 	printf(1, "shm_attach\n");
 
-	// shared_mem[0] = 'x';
-	// printf(1, "shm_set\n");
+	shared_mem[0] = 'x';
+	printf(1, "shm_set\n");
 
 	ret = shm_close(1);
 	// printf(1, "%d\n", ret);

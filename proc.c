@@ -180,7 +180,7 @@ growproc(int n)
     if((sz = deallocuvm(curproc->pgdir, sz, sz + n)) == 0)
       return -1;
   }
-  cprintf("fuck1\n");
+  // cprintf("fuck1\n");
   curproc->sz = sz;
   switchuvm(curproc);
   return 0;
@@ -208,7 +208,6 @@ fork(void)
     np->state = UNUSED;
     return -1;
   }
-  cprintf("fuck2\n");
 
   np->sz = curproc->sz;
   np->parent = curproc;

@@ -157,7 +157,7 @@ int sys_shm_attach(void)
 
 		cprintf("address %p attached iteration %d\n", *info->frame[index], index);
 		if (mappages(curproc->pgdir, (void*)PGROUNDUP(curproc->sz), PGSIZE,
-				V2P(*info->frame[index]), PTE_W | PTE_U) < 0)
+				V2P(info->frame[index]), PTE_W | PTE_U | PTE_P) < 0)
 		{
 			release(&shm_table.lock);
 			return -1;
@@ -205,8 +205,9 @@ int sys_shm_close(void)
 	if (info->refcnt == 0){
 		for (int i = (info->size - 1); i >= 0 ; i--)
 		{
-			cprintf("physical mem freed %p iteration %d\n", *(info->frame[i]), i);
-			kfree(*info->frame[i]);
+			cprintf("physical mem freed %p iteration %d\n", PGROUNDDOWN((int)(info->frame[i])), i);
+			// kfree((char*)((info->frame[i])));
+			kfree((char*)(PGROUNDDOWN((int)(info->frame[i]))));
 			curproc->sz -= PGSIZE;
 			cprintf("free %d iteration\n", i);
 		}

@@ -261,7 +261,7 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
   if(newsz >= oldsz)
     return oldsz;
 
-  cprintf("proc size : %d\n", myproc()->sz);
+  cprintf("proc pid : %d , size : %d\n", myproc()->pid, myproc()->sz);
 
   a = PGROUNDUP(newsz);
   for(; a  < oldsz; a += PGSIZE){
@@ -292,7 +292,7 @@ freevm(pde_t *pgdir)
   if(pgdir == 0)
     panic("freevm: no pgdir");
 
-  cprintf("into dealloc\n");
+  cprintf("into dealloc pid %d \n", myproc()->pid);
   deallocuvm(pgdir, KERNBASE, 0);
   for(i = 0; i < NPDENTRIES; i++){
     if(pgdir[i] & PTE_P){

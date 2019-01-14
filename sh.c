@@ -91,6 +91,7 @@ runcmd(struct cmd *cmd)
 
   case LIST:
     lcmd = (struct listcmd*)cmd;
+
     if(fork1() == 0)
       runcmd(lcmd->left);
     wait();
