@@ -39,7 +39,7 @@ int main()
 		if (fork() == 0)
 		{
 			// char* child_mem = (char*)shm_attach(1);
-			shared_mem[1] = 'p';
+			shared_mem[2] = 'x';
 			printf(1, "child 3 writing %c\n", shared_mem[2]);
 			exit();
 		}

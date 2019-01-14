@@ -223,7 +223,10 @@ fork(void)
 
   np->num_of_shmem = curproc->num_of_shmem;
   for (i = 0; i < curproc->num_of_shmem; i++)
-    np->shmem_data[i] = curproc->shmem_data[i];
+  {
+    np->shmem_data[i].shmem_id = curproc->shmem_data[i].shmem_id;
+    np->shmem_data[i].start_va = curproc->shmem_data[i].start_va;
+  }
   
   safestrcpy(np->name, curproc->name, sizeof(curproc->name));
 
