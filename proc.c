@@ -97,7 +97,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
-
+  p->num_of_shmem = 0;
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -230,7 +230,8 @@ fork(void)
   np->state = RUNNABLE;
 
   release(&ptable.lock);
-
+  
+  cprintf("fork is good\n");
   return pid;
 }
 
