@@ -274,7 +274,7 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       if(pa == 0)
         panic("kfree");
       char *v = P2V(pa);
-      kfree(v);
+      // kfree(v);
       *pte = 0;
     }
   }
@@ -359,6 +359,7 @@ copyuvm(pde_t *pgdir, uint sz)
   char *mem;
   struct shm_info* shared_info;
 
+  cprintf("CopyUVM\n");
   if((d = setupkvm()) == 0)
     return 0;
   for(i = 0; i < sz; i += PGSIZE)
@@ -374,9 +375,12 @@ copyuvm(pde_t *pgdir, uint sz)
     // VM is shared
     if (shared_info != NULL)
     {
+      cprintf("shared \n");
       int index = 0;
       for (index= 0; index < shared_info->size; index++)
       {
+        cprintf("shared %d : %p\n", index, (char*)shared_info->frame[index]);
+
         mem = (char*)shared_info->frame[index];
         if(mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0) {
           kfree(mem);
