@@ -8,7 +8,7 @@
 #include "syscall.h"
 #include "vm.h"
 
-#define NULL 0x0000
+// #define NULL 0x0000
 
 int has_attach_permission(struct shm_info* info, struct proc* p)
 {
@@ -146,7 +146,7 @@ int sys_shm_attach(void)
 		// cprintf("address %p attached iteration %d\n", info->frame[index], index);
 		if (info->flags % 2 == 0)
 		{
-			if (mappages(curproc->pgdir, PGROUNDUP(curproc->sz), PGSIZE, V2P(info->frame[index]), PTE_W | PTE_U) < 0)
+			if (mappages(curproc->pgdir, (void*)PGROUNDUP((int)curproc->sz), PGSIZE, V2P(info->frame[index]), PTE_W | PTE_U) < 0)
 			{
 				release(&shm_table.lock);
 				return -1;
@@ -154,7 +154,7 @@ int sys_shm_attach(void)
 		}
 		else 
 		{
-			if (mappages(curproc->pgdir, PGROUNDUP(curproc->sz), PGSIZE, V2P(info->frame[index]), PTE_U) < 0)
+			if (mappages(curproc->pgdir, (void*)PGROUNDUP((int)curproc->sz), PGSIZE, V2P(info->frame[index]), PTE_U) < 0)
 			{
 				release(&shm_table.lock);
 				return -1;
@@ -224,9 +224,6 @@ int sys_shm_close(void)
 		// cprintf("only size is decreasing\n");
 		curproc->sz -= info->size * PGSIZE;
 		uint* pte = walkpgdir(curproc->pgdir, (char*)curproc->sz, 0);
-		uint pa;
-		pa = PTE_ADDR(*pte);
-		char *v = P2V(pa);
 		*pte = 0;
 	}
 

@@ -273,7 +273,7 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       pa = PTE_ADDR(*pte);
       if(pa == 0)
         panic("kfree");
-      char *v = P2V(pa);
+      // char *v = P2V(pa);
       // kfree(v);
       *pte = 0;
     }
@@ -345,6 +345,8 @@ static struct shm_info* is_va_shared(struct proc* pr, int va)
       return &shm_table.shm_information[i];
     }
   }
+
+  return NULL;
   release(&shm_table.lock);
 }
 
