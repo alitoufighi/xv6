@@ -28,8 +28,10 @@ int main()
 		{
 			shared_mem[1] = 'p';
 			printf(1, "child 2 writing %c\n", shared_mem[1]);
+			shm_close(1);
 			exit();
 		}
+		shm_close(1);
 		wait();
 		exit();
 	}
@@ -40,6 +42,7 @@ int main()
 		{
 			shared_mem[2] = 'x';
 			printf(1, "child 3 writing %c\n", shared_mem[2]);
+			shm_close(1);
 			exit();
 		}
 		else
@@ -54,6 +57,7 @@ int main()
 			printf(1, "after writing %s\n", shared_mem);
 			
 			shm_close(1);
+			// printf(1, "after closing %s\n", shared_mem); this results into page fault
 			exit();
 		}
 	}
