@@ -48,3 +48,8 @@ will need to install a cross-compiler gcc suite capable of producing
 x86 ELF binaries (see https://pdos.csail.mit.edu/6.828/).
 Then run "make TOOLPREFIX=i386-jos-elf-". Now install the QEMU PC
 simulator and run "make qemu".
+
+## Our Branches
+`phase3`: Add readers-writers lock,  ticket lock, and sleep lock.
+`phase4`: Add some new scheduling algorithms (Lottery, FCFS, and Priority Scheduling) in a Multi-Level Queue scheduling scheme.
+`phase5`: Add shared memory to xv6 processes. Such that processes could open a physical shared memory, attach to it, and close it, with respect to their flags and permissions.
